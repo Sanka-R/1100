@@ -13,6 +13,10 @@
             <to name="timeStamp" type="string"/>
         </property>
         <property>
+            <from jsonPath="$.properties.type"/>
+            <to name="type" type="string"/>
+        </property>
+        <property>
             <from jsonPath="$.geometry.coordinates[1]"/>
             <to name="latitude" type="double"/>
         </property>

@@ -9,15 +9,15 @@
     <stream as="dataIn" name="standardSpatialEvents" version="1.0.0"/>
   </importedStreams>
   <queryExpressions><![CDATA[from dataIn#transform.geo:subscribeExecutionPlan()
-select id, latitude, longitude, timeStamp, speed, heading, eventId,geo:geoProximity($proximityDistance,latitude,longitude,id,timeStamp,$proximityTime) as proximity
+select id, latitude, longitude, timeStamp, type, speed, heading, eventId,geo:geoProximity($proximityDistance,latitude,longitude,id,timeStamp,$proximityTime) as proximity
 insert into innerStream;
 
 from innerStream[proximity == "false"]
-select id , latitude, longitude,timeStamp, speed, heading ,eventId , "NORMAL" as state, "" as information
+select id , latitude, longitude,timeStamp, type, speed, heading ,eventId , "NORMAL" as state, "" as information
 insert into dataOut;
 
 from innerStream[proximity != "false"]
-select id , latitude, longitude,timeStamp, speed, heading ,eventId , "WARNING" as state, proximity as information
+select id , latitude, longitude,timeStamp, type, speed, heading ,eventId , "WARNING" as state, proximity as information
 insert into dataOut;]]></queryExpressions>
   <exportedStreams>
     <stream name="processedSpatialEvents" valueOf="dataOut" version="1.0.0"/>

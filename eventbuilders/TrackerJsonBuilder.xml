@@ -22,6 +22,10 @@
             <to name="longitude" type="double"/>
         </property>
         <property>
+            <from jsonPath="$.type"/>
+            <to default="vehicle" name="type" type="string"/>
+        </property>
+        <property>
             <from jsonPath="$.speed"/>
             <to name="speed" type="float"/>
         </property>

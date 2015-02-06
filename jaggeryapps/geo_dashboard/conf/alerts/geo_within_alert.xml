@@ -10,10 +10,10 @@
     <stream as="dataIn" name="standardSpatialEvents" version="1.0.0"/>
   </importedStreams>
   <queryExpressions><![CDATA[from dataIn[geo:iswithin(longitude,latitude,"$geoFenceGeoJSON")==true]#transform.geo:subscribeExecutionPlan()
-select id , latitude, longitude,timeStamp, speed, heading ,eventId , "ALERTED" as state, "This vehicle is in $areaName restricted area!!!" as information
+select id , latitude, longitude,timeStamp, type, speed, heading ,eventId , "ALERTED" as state, "This vehicle is in $areaName restricted area!!!" as information
 insert into dataOut;
 from dataIn[geo:iswithin(longitude,latitude,"$geoFenceGeoJSON")!=true]
-select id , latitude, longitude,timeStamp, speed, heading ,eventId , "NORMAL" as state, "" as information
+select id , latitude, longitude,timeStamp, type, speed, heading ,eventId , "NORMAL" as state, "" as information
 insert into dataOut;]]></queryExpressions>
   <exportedStreams>
     <stream name="processedSpatialEvents" valueOf="dataOut" version="1.0.0"/>

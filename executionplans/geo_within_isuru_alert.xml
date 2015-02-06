@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executionPlan name="geo_within_isuru_alert" statistics="enable"
+  trace="enable" xmlns="http://wso2.org/carbon/eventprocessor">
+  <description/>
+  <siddhiConfiguration>
+    <property name="siddhi.persistence.snapshot.time.interval.minutes">0</property>
+    <property name="siddhi.enable.distributed.processing">false</property>
+  </siddhiConfiguration>
+  <importedStreams>
+    <stream as="dataIn" name="standardSpatialEvents" version="1.0.0"/>
+  </importedStreams>
+  <queryExpressions>from dataIn[geo:iswithin(longitude,latitude,"{'type':'Polygon','coordinates':[[[0.245819091796875,51.311730269032594],[0.245819091796875,51.44373668041616],[0.608367919921875,51.44373668041616],[0.608367919921875,51.311730269032594],[0.245819091796875,51.311730269032594]]]}")==true]#transform.geo:subscribeExecutionPlan()
+select id , latitude, longitude,timeStamp, type, speed, heading ,eventId , "ALERTED" as state, "This vehicle is in isuru restricted area!!!" as information
+insert into dataOut;
+from dataIn[geo:iswithin(longitude,latitude,"{'type':'Polygon','coordinates':[[[0.245819091796875,51.311730269032594],[0.245819091796875,51.44373668041616],[0.608367919921875,51.44373668041616],[0.608367919921875,51.311730269032594],[0.245819091796875,51.311730269032594]]]}")!=true]
+select id , latitude, longitude,timeStamp, type, speed, heading ,eventId , "NORMAL" as state, "" as information
+insert into dataOut;</queryExpressions>
+  <exportedStreams>
+    <stream name="processedSpatialEvents" valueOf="dataOut" version="1.0.0"/>
+  </exportedStreams>
+</executionPlan>

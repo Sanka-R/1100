@@ -12,7 +12,8 @@
         "heading": {{heading}},
         "state": "{{state}}",
         "information": "{{information}}",
-        "notify": {{notify}}
+        "notify": {{notify}},
+        "type": {{type}}
       },
   "geometry": {
         "type": "Point",

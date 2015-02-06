@@ -8,11 +8,11 @@
   <importedStreams>
     <stream as="dataIn" name="standardSpatialEvents" version="1.0.0"/>
   </importedStreams>
-  <queryExpressions><![CDATA[from dataIn[speed >= 234567]#transform.geo:subscribeExecutionPlan()
-select id , latitude, longitude,timeStamp, speed, heading ,eventId , "ALERTED" as state, "This vehicle is going over speed!!" as information
+  <queryExpressions><![CDATA[from dataIn[speed >= 10000]#transform.geo:subscribeExecutionPlan()
+select id , latitude, longitude,timeStamp, type, speed, heading ,eventId , "ALERTED" as state, "This vehicle is going over speed!!" as information
 insert into dataOut;
-from dataIn[speed < 234567]
-select id , latitude, longitude,timeStamp, speed, heading ,eventId , "NORMAL" as state, "Normal driving pattern" as information
+from dataIn[speed < 10000]
+select id , latitude, longitude,timeStamp, type, speed, heading ,eventId , "NORMAL" as state, "Normal driving pattern" as information
 insert into dataOut;]]></queryExpressions>
   <exportedStreams>
     <stream name="processedSpatialEvents" valueOf="dataOut" version="1.0.0"/>
