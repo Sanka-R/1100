@@ -252,4 +252,135 @@
  
     </streamDefinition>
 
+<streamDefinition>
+ 
+        {
+		"streamId": "fusedGeoEvent:1.0.0",
+		"name": "fusedGeoEvent",
+		"version": "1.0.0",
+		"nickName": "",
+		"description": "",
+		"payloadData": [
+		{
+		"name": "id",
+		"type": "STRING"
+		},
+		{
+		"name": "timeStamp",
+		"type": "STRING"
+		},
+		{
+		"name": "geoJSON",
+		"type": "STRING"
+		},
+		{
+		"name": "state",
+		"type": "STRING"
+		},
+		{
+		"name": "information",
+		"type": "STRING"
+		},
+		{
+		"name": "notify",
+		"type": "BOOL"
+		}
+		]
+}
+ 
+    </streamDefinition>
+
+<streamDefinition>
+ 
+       {
+		"streamId": "processedGeoEvents:1.0.0",
+		"name": "processedGeoEvents",
+		"version": "1.0.0",
+		"nickName": "",
+		"description": "",
+		"payloadData": [
+		{
+		"name": "id",
+		"type": "STRING"
+		},
+		{
+		"name": "timeStamp",
+		"type": "STRING"
+		},
+		{
+		"name": "geoJSON",
+		"type": "STRING"
+		},
+		{
+		"name": "eventId",
+		"type": "STRING"
+		},
+		{
+		"name": "state",
+		"type": "STRING"
+		},
+		{
+		"name": "information",
+		"type": "STRING"
+		}
+		]
+}
+    </streamDefinition>
+
+<streamDefinition>
+ 
+       {
+		"streamId": "rawGeoStream:1.0.0",
+		"name": "rawGeoStream",
+		"version": "1.0.0",
+		"nickName": "",
+		"description": "Any raw data send from external users to CEP, this stream will be used by inputStandardizer to transform raw events to standard spatial event(with spatial standards ).",
+		"payloadData": [
+		{
+		"name": "id",
+		"type": "STRING"
+		},
+		{
+		"name": "timeStamp",
+		"type": "STRING"
+		},
+		{
+		"name": "geoJSON",
+		"type": "STRING"
+		}
+		]
+}
+ 
+    </streamDefinition>
+
+<streamDefinition>
+ 
+       {
+		"streamId": "standardGeoEvents:1.0.0",
+		"name": "standardGeoEvents",
+		"version": "1.0.0",
+		"nickName": "",
+		"description": "Standardized event by spatial InputStandardizer execution plan",
+		"payloadData": [
+		{
+		"name": "id",
+		"type": "STRING"
+		},
+		{
+		"name": "timeStamp",
+		"type": "STRING"
+		},
+		{
+		"name": "geoJSON",
+		"type": "STRING"
+		},
+		{
+		"name": "eventId",
+		"type": "STRING"
+		}
+		]
+}
+ 
+    </streamDefinition>
+
 </streamDefinitions>

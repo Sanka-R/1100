@@ -18,5 +18,5 @@
             <to name="geoJSON" type="String"/>
         </property>
     </mapping>
-    <to streamName="rawGeoStream" version="1.0.0"/>
+    <to streamName="rawInputStream" version="1.0.0"/>
 </eventBuilder>
