@@ -72,7 +72,7 @@ var webSocketOnError = function (e) {
 var webSocketOnMessage = function processMessage(message) {
     var geoJsonFeature = $.parseJSON(message.data);
 
-	console.log(JSON.stringify(geoJsonFeature));
+	//console.log(JSON.stringify(geoJsonFeature));
     if (geoJsonFeature.id in currentSpatialObjects) {
         var excitingObject = currentSpatialObjects[geoJsonFeature.id];
         excitingObject.update(geoJsonFeature);
@@ -87,8 +87,26 @@ var webSocketOnMessage = function processMessage(message) {
 
 var areaWebSocketOnMessage = function processMessage(message) {
     var json = $.parseJSON(message.data);
-	console.log(JSON.stringify(json));
-	var receivedObject = L.geoJson(json);
+	//console.log(JSON.stringify(json));
+	var myStyle = {
+    		"color": "#000001",
+    		"weight": 5,
+    		"opacity": 0,
+    		"fillOpacity": 0.75
+	};
+	
+	//console.log(json.properties.state);	
+
+	switch(json.properties.state){
+		case "Moderate": 
+			myStyle["color"] = "#ffb13b";
+			break;
+		case "Severe": 
+			myStyle["color"] = "#ff3f3f";
+	                break;
+		
+	}
+	var receivedObject = L.geoJson(json, {style: myStyle});
 	currentSpatialObjects[json.id] = receivedObject;
 	currentSpatialObjects[json.id].addTo(map);
 }
@@ -132,6 +150,13 @@ var normalIcon = L.icon({
     iconUrl: ApplicationOptions.leaflet.iconUrls.normalIcon,
     shadowUrl: false,
     iconSize: [24, 24],
+    iconAnchor: [+12, +12],
+    popupAnchor: [-2, -5]
+});
+var stopIcon = L.icon({
+    iconUrl: ApplicationOptions.leaflet.iconUrls.stopIcon,
+    shadowUrl: false,
+    iconSize: [20, 20],
     iconAnchor: [+12, +12],
     popupAnchor: [-2, -5]
 });
@@ -216,18 +241,31 @@ SpatialObject.prototype.setSpeed = function (speed) {
 
 SpatialObject.prototype.stateIcon = function () {
     // Performance of if-else, switch or map based conditioning http://stackoverflow.com/questions/8624939/performance-of-if-else-switch-or-map-based-conditioning
-    switch (this.state) {
-        case "NORMAL":
-            return normalIcon;
-        case "ALERTED":
-            return alertedIcon;
-        case "OFFLINE":
-            return offlineIcon;
-        case "WARNING":
-            return warningIcon;
-        default:
-            return defaultIcon;
-    }
+	
+	if(this.type == ""){ 
+		switch (this.state) {
+		    case "NORMAL":
+		        return normalIcon;
+		    case "ALERTED":
+		        return alertedIcon;
+		    case "OFFLINE":
+		        return offlineIcon;
+		    case "WARNING":
+		        return warningIcon;
+		    default:
+		        return defaultIcon;
+		}
+	}
+	else{
+		var customUrl = 'assets/img/markers/' + this.type +'.png';
+		var customIcon = L.icon({
+			iconUrl: customUrl,
+			iconSize: [24, 24],
+			iconAnchor: [+12, +12],
+			popupAnchor: [-2, -5]
+		});
+		return customIcon;
+	}
 };
 
 SpatialObject.prototype.updatePath = function (LatLng) {
@@ -298,20 +336,11 @@ SpatialObject.prototype.update = function (geoJSON) {
     this.latitude = geoJSON.geometry.coordinates[1];
     this.longitude = geoJSON.geometry.coordinates[0];
     this.setSpeed(geoJSON.properties.speed);
-    //this.state = geoJSON.properties.state;
+    this.state = geoJSON.properties.state;
     this.heading = geoJSON.properties.heading;
     
-    //Hack for geo-feed strata demo *********
-    if(geoJSON.properties.speed == 0){
-    	this.state = "WARNING";
-    	this.information = "Bus Stop";
-    }
-    else{
-    	this.state = geoJSON.properties.state;
-    	this.information = geoJSON.properties.information;
-    }
-    // *************
-    //this.information = geoJSON.properties.information;
+    this.information = geoJSON.properties.information;
+    this.type = geoJSON.properties.type;
 
     if (geoJSON.properties.notify) {
     	if (this.state != "NORMAL") {

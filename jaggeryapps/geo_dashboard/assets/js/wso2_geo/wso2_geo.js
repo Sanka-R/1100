@@ -1,4 +1,4 @@
-/*
+f/*
  *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
@@ -46,6 +46,14 @@ websocket.onmessage = function processMessage(message) {
 
 var normalIcon = L.icon({
     iconUrl: "assets/img/markers/arrow_normal.png",
+    shadowUrl: false,
+    iconSize: [24, 24],
+    iconAnchor: [+12, +12],
+    popupAnchor: [-2, -5] //[-3,-76]
+});
+
+var stopIcon = L.icon({
+    iconUrl: "assets/img/markers/stopIcon.png",
     shadowUrl: false,
     iconSize: [24, 24],
     iconAnchor: [+12, +12],
@@ -466,6 +474,7 @@ function setWithinAlert(leafletId) {
      * this is against JSON standards so has been re-replaced when getting the data from governance registry
      * (look in get_alerts for .replace() method)
      * */
+     
     var selectedAreaGeoJson = JSON.stringify(map._layers[leafletId].toGeoJSON().geometry).replace(/"/g, "'");
     var queryName = $("#queryName").val();
     var areaName = $("#areaName").val();

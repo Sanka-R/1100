@@ -53,8 +53,8 @@ var ApplicationOptions = {
             offlineIcon: 'assets/img/markers/arrow_offline.png',
             warningIcon: 'assets/img/markers/arrow_warning.png',
             defaultIcon: 'assets/img/markers/default_icons/marker-icon.png',
-            resizeIcon: 'assets/img/markers/resize.png'
-            
+            resizeIcon: 'assets/img/markers/resize.png',
+            stopIcon:  'assets/img/markers/stopIcon.png'
 
         }
     }

@@ -123,6 +123,41 @@ function openTools(id) {
                 featureGroup: drawnItems
             }
         });
+    } else if(id=="Traffic"){
+        // Initialise the draw control and pass it the FeatureGroup of editable layers
+        drawControl = new L.Control.Draw({
+            draw: {
+                polygon: {
+                    allowIntersection: false, // Restricts shapes to simple polygons
+                    drawError: {
+                        color: '#e1e100', // Color the shape will turn when intersects
+                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                    },
+                    shapeOptions: {
+                        color: '#ff0043'
+                    }
+                },
+                rectangle: {
+                    shapeOptions: {
+                        color: '#002bff'
+                    }
+                },
+                polyline: false,
+                circle: {
+                    shapeOptions: {
+                        color: '#ff0043'
+                    }
+                },
+                marker: {
+                	shapeOptions: {
+                		color: '#ff0043'
+                	}
+                }
+            },
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
     }
 
     map.addControl(drawControl);
@@ -149,7 +184,8 @@ function createPopup(layer,id) {
     } else if(id=="Stationery"){
         var popupTemplate = $('#setStationeryAlert');
         popupTemplate.find('#addStationeryAlert').attr('leaflet_id', layer._leaflet_id);
-    }
+    } 
+    
     popupTemplate.find('#exportGeoJson').attr('leaflet_id', layer._leaflet_id);
     popupTemplate.find('#editGeoJson').attr('leaflet_id', layer._leaflet_id);
 
