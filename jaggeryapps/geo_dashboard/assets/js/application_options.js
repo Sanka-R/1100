@@ -32,7 +32,8 @@ var ApplicationOptions = {
         WEB_SOCKET_SERVER: 'localhost',
         WEB_SOCKET_PORT: 9763,
         CEP_WEB_SOCKET_OUTPUT_ADAPTOR_NAME: 'DefaultWebsocketOutputAdaptor',
-        CEP_WEB_SOCKET_BUILDER_TOPIC: 'geoDataEndPoint',
+        CEP_WEB_SOCKET_BUILDER_TOPIC: 'geoPointDataEndPoint',
+        CEP_AREA_WEB_SOCKET_BUILDER_TOPIC: 'geoDataEndPoint',
 
         SPEED_HISTORY_COUNT: 20,
         NOTIFY_INFO_TIMEOUT: 1000,

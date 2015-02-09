@@ -8,16 +8,11 @@
   </siddhiConfiguration>
   <importedStreams>
     <stream as="dataPoint" name="rawInputStream" version="1.0.0"/>
-    <stream as="dataGeo" name="rawGeoStream" version="1.0.0"/>
   </importedStreams>
   <queryExpressions><![CDATA[from dataPoint
 select id, latitude, longitude, timeStamp, type, speed, heading, geo:generateEventId() as eventId
-insert into dataOutPoint;
-from dataGeo
-select id, timeStamp, geoJSON, geo:generateEventId() as eventId
-insert into dataOutGeo]]></queryExpressions>
+insert into dataOutPoint;]]></queryExpressions>
   <exportedStreams>
     <stream name="standardSpatialEvents" valueOf="dataOutPoint" version="1.0.0"/>
-    <stream name="standardGeoEvents" valueOf="dataOutGeo" version="1.0.0"/>
   </exportedStreams>
 </executionPlan>

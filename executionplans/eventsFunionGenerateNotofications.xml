@@ -9,7 +9,7 @@
   <importedStreams>
     <stream as="dataIn" name="processedSpatialEvents" version="1.0.0"/>
   </importedStreams>
-  <queryExpressions><![CDATA[from dataIn#window.geo:eventsFunion(eventId) 
+  <queryExpressions><![CDATA[from dataIn#window.geo:eventsFunion(eventId, state, information) 
 insert into innerStream;
 
 from innerStream

@@ -21,25 +21,22 @@ var showPathFlag = false; // Flag to hold the status of draw objects path
 var currentSpatialObjects = {};
 var selectedSpatialObject; // This is set when user search for an object from the search box
 var webSocketURL;
+var areaWebSocketURL;
 var websocket;
 
 // Make the function wait until the connection is made...
 var waitTime = 1000;
-function waitForSocketConnection(socket, callback){
+function waitForSocketConnection(socket, initialize){
 
     setTimeout(
         function () {
             if (socket.readyState === 1) {
-                initializeWebSocket();
+                initialize();
                 waitTime = 1000;
                 console.log("Connection is made");
-                if(callback != null){
-                    callback();
-                }
                 return;
 
             } else {
-                websocket = new WebSocket(webSocketURL);
                 waitTime += 400;
                 $.UIkit.notify({
                     message: "wait for connection "+waitTime/1000+" Seconds...",
@@ -47,7 +44,7 @@ function waitForSocketConnection(socket, callback){
                     timeout: waitTime,
                     pos: 'top-center'
                 });
-                waitForSocketConnection(websocket, callback);
+                waitForSocketConnection(websocket, initialize);
             }
 
         }, waitTime); // wait 5 milisecond for the connection...
@@ -69,63 +66,67 @@ var webSocketOnError = function (e) {
         timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
         pos: 'top-center'
     });
-//    waitForSocketConnection(websocket);
-};
-
-var webSocketOnClose =function (e) {
-    $.UIkit.notify({
-        message: 'Connection lost with server!!',
-        status: 'danger',
-        timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
-        pos: 'top-center'
-    });
-    waitForSocketConnection(websocket);
+//    waitForSocketConnection(websocket, webSocketURL, null);
 };
 
 var webSocketOnMessage = function processMessage(message) {
     var geoJsonFeature = $.parseJSON(message.data);
 
+	console.log(JSON.stringify(geoJsonFeature));
     if (geoJsonFeature.id in currentSpatialObjects) {
         var excitingObject = currentSpatialObjects[geoJsonFeature.id];
         excitingObject.update(geoJsonFeature);
     }
     else {
-        var json = geoJsonFeature;
-        var long = json.geometry.coordinates[0];
-        var lat = json.geometry.coordinates[1];
-	if(json.properties.speed < 0.001) {
-		json.geometry =  {"type": "Polygon",
-		"coordinates": [[
-		   [lat + 0.001, long + 0.001],
-		   [lat + 0.001, long],
-		   [lat, long],
-		   [lat + 0.001, long + 0.001]
-		]]
-		};
-		console.log(JSON.stringify(json));
-		var receivedObject = L.geoJson(json);
-		currentSpatialObjects[json.id] = receivedObject;
-		currentSpatialObjects[json.id].addTo(map);
-		console.log(JSON.stringify(json));
-	} else{
-	
         var receivedObject = new SpatialObject(geoJsonFeature);
         receivedObject.update(geoJsonFeature);
         currentSpatialObjects[receivedObject.id] = receivedObject;
         currentSpatialObjects[receivedObject.id].addTo(map);
-        }
     }
 };
+
+var areaWebSocketOnMessage = function processMessage(message) {
+    var json = $.parseJSON(message.data);
+	console.log(JSON.stringify(json));
+	var receivedObject = L.geoJson(json);
+	currentSpatialObjects[json.id] = receivedObject;
+	currentSpatialObjects[json.id].addTo(map);
+}
 
 function initializeWebSocket(){
     websocket = new WebSocket(webSocketURL);
     websocket.onmessage = webSocketOnMessage;
-    websocket.onclose = webSocketOnClose;
+    websocket.onclose = function (e) {
+        $.UIkit.notify({
+            message: 'Connection lost with server!!',
+            status: 'danger',
+            timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
+            pos: 'top-center'
+        });
+        waitForSocketConnection(websocket, initializeWebSocket);
+    };
+
     websocket.onerror = webSocketOnError;
     websocket.onopen = webSocketOnOpen;
 }
 
+function initializeAreaWebSocket(){
+    areawebsocket = new WebSocket(areaWebSocketURL);
+    areawebsocket.onmessage = areaWebSocketOnMessage;
+
+    areawebsocket.onclose = function (e) {
+        $.UIkit.notify({
+            message: 'Connection lost with server!!',
+            status: 'danger',
+            timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
+            pos: 'top-center'
+        });
+        waitForSocketConnection(websocket, initializeAreaWebSocket);
+    };
+}
+
 initializeWebSocket();
+initializeAreaWebSocket();
 
 var normalIcon = L.icon({
     iconUrl: ApplicationOptions.leaflet.iconUrls.normalIcon,

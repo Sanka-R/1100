@@ -6,7 +6,7 @@
     </from>
     <mapping customMapping="enable" type="json">
         <property>
-            <from jsonPath="$properties.id"/>
+            <from jsonPath="$id"/>
             <to default="0.0" name="id" type="string"/>
         </property>
         <property>
@@ -14,8 +14,16 @@
             <to name="timeStamp" type="string"/>
         </property>
         <property>
-            <from jsonPath="$"/>
-            <to name="geoJSON" type="String"/>
+            <from jsonPath="$properties.state"/>
+            <to name="state" type="String"/>
+        </property>
+        <property>
+            <from jsonPath="$geometry"/>
+            <to name="geometry" type="String"/>
+        </property>
+        <property>
+            <from jsonPath="$properties.information"/>
+            <to name="information" type="String"/>
         </property>
     </mapping>
     <to streamName="rawGeoStream" version="1.0.0"/>

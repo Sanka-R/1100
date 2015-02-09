@@ -254,44 +254,6 @@
 
 <streamDefinition>
  
-        {
-		"streamId": "fusedGeoEvent:1.0.0",
-		"name": "fusedGeoEvent",
-		"version": "1.0.0",
-		"nickName": "",
-		"description": "",
-		"payloadData": [
-		{
-		"name": "id",
-		"type": "STRING"
-		},
-		{
-		"name": "timeStamp",
-		"type": "STRING"
-		},
-		{
-		"name": "geoJSON",
-		"type": "STRING"
-		},
-		{
-		"name": "state",
-		"type": "STRING"
-		},
-		{
-		"name": "information",
-		"type": "STRING"
-		},
-		{
-		"name": "notify",
-		"type": "BOOL"
-		}
-		]
-}
- 
-    </streamDefinition>
-
-<streamDefinition>
- 
        {
 		"streamId": "processedGeoEvents:1.0.0",
 		"name": "processedGeoEvents",
@@ -308,11 +270,7 @@
 		"type": "STRING"
 		},
 		{
-		"name": "geoJSON",
-		"type": "STRING"
-		},
-		{
-		"name": "eventId",
+		"name": "geometry",
 		"type": "STRING"
 		},
 		{
@@ -345,7 +303,15 @@
 		"type": "STRING"
 		},
 		{
-		"name": "geoJSON",
+		"name": "geometry",
+		"type": "STRING"
+		},
+		{
+		"name": "state",
+		"type": "STRING"
+		},
+		{
+		"name": "information",
 		"type": "STRING"
 		}
 		]
@@ -371,7 +337,15 @@
 		"type": "STRING"
 		},
 		{
-		"name": "geoJSON",
+		"name": "geometry",
+		"type": "STRING"
+		},
+		{
+		"name": "state",
+		"type": "STRING"
+		},
+		{
+		"name": "information",
 		"type": "STRING"
 		},
 		{
