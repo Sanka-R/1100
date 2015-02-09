@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executionPlan name="within_traffic" statistics="disable"
+  trace="disable" xmlns="http://wso2.org/carbon/eventprocessor">
+  <description/>
+  <siddhiConfiguration>
+    <property name="siddhi.persistence.snapshot.time.interval.minutes">0</property>
+    <property name="siddhi.enable.distributed.processing">false</property>
+  </siddhiConfiguration>
+  <importedStreams>
+    <stream as="dataIn" name="processedGeoEvents" version="1.0.0"/>
+  </importedStreams>
+  <queryExpressions><![CDATA[from dataIn[geo:intersects(geometry, "{'type': 'Point', 'coordinates':[51.5114012,-0.278506]}")==true]
+select id, state, information, timeStamp, 51.5114012 as latitude, -0.278506 as longitude
+insert into dataOut]]></queryExpressions>
+  <exportedStreams>
+    <stream name="AlertsNotifications" valueOf="dataOut" version="1.0.0"/>
+  </exportedStreams>
+</executionPlan>
