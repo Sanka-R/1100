@@ -161,7 +161,7 @@ function openTools(id) {
     }
 
     map.addControl(drawControl);
-
+	
     map.on('draw:created', function (e) {
         var type = e.layerType,
             layer = e.layer;
@@ -171,6 +171,8 @@ function openTools(id) {
         }*/
 
         drawnItems.addLayer(layer);
+        
+        console.log("created layer for "+ id);
         createPopup(layer,id);
 
     });
@@ -184,6 +186,11 @@ function createPopup(layer,id) {
     } else if(id=="Stationery"){
         var popupTemplate = $('#setStationeryAlert');
         popupTemplate.find('#addStationeryAlert').attr('leaflet_id', layer._leaflet_id);
+    } else if(id=="Traffic"){
+        var popupTemplate = $('#setTrafficAlert');
+        popupTemplate.find('#addTrafficAlert').attr('leaflet_id', layer._leaflet_id);
+        
+    console.log(">>got here " + id + " " +  popupTemplate.find('#addTrafficAlert') + " " + layer._leaflet_id);
     } 
     
     popupTemplate.find('#exportGeoJson').attr('leaflet_id', layer._leaflet_id);
@@ -263,7 +270,8 @@ function updateDrawing(updatedGeoJson) {
     polygon.editing.enable();
     map.addLayer(polygon);
     createPopup(polygon);
-
+	
+        console.log("got here" + id);
     /*
      // For reffrence TODO: remove if not use
      currentDrawingLayer.setLatLngs(leafletLatLngs);
@@ -341,6 +349,7 @@ function viewFence(geoFenceElement,id) {
             $(geometryShape._popup._container.childNodes[0]).css("background", "rgba(255,255,255,0.8)");
 
         });
+    } else if(id=="Traffic"){
     }
     closeAll();
 }

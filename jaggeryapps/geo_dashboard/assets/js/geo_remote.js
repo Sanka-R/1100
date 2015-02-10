@@ -247,6 +247,49 @@ function setStationeryAlert(leafletId) {
     }, 'json');
 }
 
+function setTrafficAlert(leafletId) {
+    /*
+     * TODO: replace double quote to single quote because of a conflict when deploying execution plan in CEP
+     * this is against JSON standards so has been re-replaced when getting the data from governance registry
+     * (look in get_alerts for .replace() method)
+     * */
+     console.log("leafletId: " + leafletId);
+    var selectedAreaGeoJson = map._layers[leafletId].toGeoJSON().geometry;
+
+    //if a circle is drawn adding radius for the object
+    if(selectedAreaGeoJson.type=="Point"){
+
+        var radius=map._layers[leafletId]._mRadius;
+        selectedAreaGeoJson["radius"]=radius;
+    }
+
+	console.log("***********");
+
+    var selectedProcessedAreaGeoJson = JSON.stringify(selectedAreaGeoJson).replace(/"/g, "'");
+
+    var queryName = $("#queryName").val();
+    var stationeryName = $("#areaName").val();
+    var time = $("#time").val();
+    var data = {
+        'parseData': JSON.stringify({'geoFenceGeoJSON': selectedProcessedAreaGeoJson, 'executionPlanName': createExecutionPlanName(queryName,"Traffic"), 'stationeryName': stationeryName , 'stationeryTime': time}),
+        'executionPlan': 'traffic',
+        'customName': stationeryName, // TODO: fix , When template copies there can be two queryName and areaName id elements in the DOM
+        'queryName': queryName,
+        'cepAction': 'deploy'
+    };
+    
+    $.post('controllers/set_alerts.jag', data, function (response) {
+        $.UIkit.notify({
+            message: '<span style="color: dodgerblue">' + response.status + '</span><br>' + response.message,
+            status: (response.status == 'success' ? 'success' : 'danger'),
+            timeout: 3000,
+            pos: 'top-center'
+        });
+        closeAll();
+        closeTools(leafletId);
+    }, 'json');
+}
+
 function removeGeoFence(geoFenceElement,id) {
     var queryName = $(geoFenceElement).attr('data-queryName');
     var areaName = $(geoFenceElement).attr('data-areaName');
