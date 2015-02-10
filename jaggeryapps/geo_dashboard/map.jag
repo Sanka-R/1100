@@ -95,6 +95,9 @@ var user = session.get("user");
         // Web socket for areas and other objects
         var areaWebSocketURL = _url + ApplicationOptions.constance.CEP_AREA_WEB_SOCKET_BUILDER_TOPIC;
         ApplicationOptions.constance.AREA_WEB_SOCKET_URL = areaWebSocketURL;
+
+        var alertWebSocketURL = _url + ApplicationOptions.constance.CEP_ALERT_WEB_SOCKET_BUILDER_TOPIC;
+        ApplicationOptions.constance.ALERT_WEB_SOCKET_URL = alertWebSocketURL;
     </script>
     <script src="assets/js/websocket.js"></script>
     <script src="assets/js/geo_remote.js"></script>

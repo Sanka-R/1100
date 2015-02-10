@@ -18,12 +18,13 @@
 
 function showAlertInMap(alertData) {
     clearFocus();
-
     var id = $(alertData).attr("data-id");
     var latitude = $(alertData).attr("data-latitude");
     var longitude = $(alertData).attr("data-longitude");
     var state = $(alertData).attr("data-state");
     var information = $(alertData).attr("data-information");
+
+    console.log(information);
 
     var alertLatLngPoint = L.latLng(latitude,longitude);
 

@@ -22,6 +22,7 @@ var currentSpatialObjects = {};
 var selectedSpatialObject; // This is set when user search for an object from the search box
 var webSocketURL;
 var areaWebSocketURL;
+var alertWebSocketURL;
 var websocket;
 
 // Make the function wait until the connection is made...
@@ -111,6 +112,15 @@ var areaWebSocketOnMessage = function processMessage(message) {
 	currentSpatialObjects[json.id].addTo(map);
 }
 
+var alertWebSocketOnMessage = function processMessage(message) {
+    var json = $.parseJSON(message.data);
+    console.log(json);
+	if (json.state != "NORMAL" && json.state != "MINIMAL") {
+        notifyAlert("Object ID: <span style='color: blue;cursor: pointer' onclick='focusOnSpatialObject(" + json.id + ")'>" + json.id + "</span> change state to: <span style='color: red'>" + json.state + "</span> Info : " + json.information);
+    }
+}
+
+
 function initializeWebSocket(){
     websocket = new WebSocket(webSocketURL);
     websocket.onmessage = webSocketOnMessage;
@@ -139,12 +149,28 @@ function initializeAreaWebSocket(){
             timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
             pos: 'top-center'
         });
-        waitForSocketConnection(websocket, initializeAreaWebSocket);
+        waitForSocketConnection(areawebsocket, initializeAreaWebSocket);
+    };
+}
+
+function initializeAlertWebSocket(){
+    alertwebsocket = new WebSocket(alertWebSocketURL);
+    alertwebsocket.onmessage = alertWebSocketOnMessage;
+
+    alertwebsocket.onclose = function (e) {
+        $.UIkit.notify({
+            message: 'Connection lost with server!!',
+            status: 'danger',
+            timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
+            pos: 'top-center'
+        });
+        waitForSocketConnection(alertwebsocket, initializeAlertWebSocket);
     };
 }
 
 initializeWebSocket();
 initializeAreaWebSocket();
+initializeAlertWebSocket();
 
 var normalIcon = L.icon({
     iconUrl: ApplicationOptions.leaflet.iconUrls.normalIcon,
@@ -398,8 +424,6 @@ SpatialObject.prototype.update = function (geoJSON) {
     this.popupTemplate.find('#speed').html(this.speed);
     this.popupTemplate.find('#heading').html(this.heading);
     this.marker.setPopupContent(this.popupTemplate.html())
-
-
 };
 
 function notifyAlert(message) {

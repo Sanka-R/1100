@@ -48,6 +48,8 @@
             var resourceContents = parseDataJson.speedAlertValue;
         } else if(executionPlan == 'proximity'){
             var resourceContents = parseDataJson
+        } else if(executionPlan == 'traffic'){
+            var resourceContents = parseDataJson.geoFenceGeoJSON;
         }
         storeAlerts(parseKey,resourceContents,executionPlan,optionalArgs);
 

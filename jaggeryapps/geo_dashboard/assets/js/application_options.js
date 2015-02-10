@@ -34,6 +34,7 @@ var ApplicationOptions = {
         CEP_WEB_SOCKET_OUTPUT_ADAPTOR_NAME: 'DefaultWebsocketOutputAdaptor',
         CEP_WEB_SOCKET_BUILDER_TOPIC: 'geoPointDataEndPoint',
         CEP_AREA_WEB_SOCKET_BUILDER_TOPIC: 'geoDataEndPoint',
+        CEP_ALERT_WEB_SOCKET_BUILDER_TOPIC: 'geoAlertDataEndPoint',
 
         SPEED_HISTORY_COUNT: 20,
         NOTIFY_INFO_TIMEOUT: 1000,
