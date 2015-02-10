@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executionPlan name="geo_traffic_westminister_alert"
+  statistics="disable" trace="disable" xmlns="http://wso2.org/carbon/eventprocessor">
+  <description/>
+  <siddhiConfiguration>
+    <property name="siddhi.persistence.snapshot.time.interval.minutes">0</property>
+    <property name="siddhi.enable.distributed.processing">false</property>
+  </siddhiConfiguration>
+  <importedStreams>
+    <stream as="dataIn" name="processedGeoEvents" version="1.0.0"/>
+  </importedStreams>
+  <queryExpressions>from dataIn[geo:intersects(geometry, "{'type':'Polygon','coordinates':[[[-0.1297760009765625,51.49915245023299],[-0.1297760009765625,51.502144535807645],[-0.12329578399658203,51.502144535807645],[-0.12329578399658203,51.49915245023299],[-0.1297760009765625,51.49915245023299]]]}")==true]
+select id, state, concat("Traffic alert in westminister: ", information) as information, timeStamp, 0.0 as latitude, 0.0 as longitude
+insert into dataOut</queryExpressions>
+  <exportedStreams>
+    <stream name="AlertsNotifications" valueOf="dataOut" version="1.0.0"/>
+  </exportedStreams>
+</executionPlan>

@@ -268,16 +268,16 @@ function setTrafficAlert(leafletId) {
     var selectedProcessedAreaGeoJson = JSON.stringify(selectedAreaGeoJson).replace(/"/g, "'");
 
     var queryName = $("#queryName").val();
-    var stationeryName = $("#areaName").val();
+    var areaName = $("#areaName").val();
     var time = $("#time").val();
     var data = {
-        'parseData': JSON.stringify({'geoFenceGeoJSON': selectedProcessedAreaGeoJson, 'executionPlanName': createExecutionPlanName(queryName,"Traffic"), 'stationeryName': stationeryName , 'stationeryTime': time}),
+        'parseData': JSON.stringify({'geoFenceGeoJSON': selectedProcessedAreaGeoJson, 'executionPlanName': createExecutionPlanName(queryName,"Traffic"), 'areaName': areaName}),
         'executionPlan': 'traffic',
-        'customName': stationeryName, // TODO: fix , When template copies there can be two queryName and areaName id elements in the DOM
+        'customName': areaName, // TODO: fix , When template copies there can be two queryName and areaName id elements in the DOM
         'queryName': queryName,
         'cepAction': 'deploy'
     };
-    
+    console.log(JSON.stringify(data));
     $.post('controllers/set_alerts.jag', data, function (response) {
         $.UIkit.notify({
             message: '<span style="color: dodgerblue">' + response.status + '</span><br>' + response.message,
@@ -375,6 +375,9 @@ function createExecutionPlanName(queryName,id) {
     }
     else if(id=="Stationery"){
         return 'geo_stationery' + (queryName ? '_' + queryName : '') + '_alert'; // TODO: value of the `queryName` can't be empty, because it will cause name conflicts in CEP, have to do validation(check not empty String)
+    }
+    else if(id=="Traffic"){
+        return 'geo_traffic' + (queryName ? '_' + queryName : '') + '_alert'; // TODO: value of the `queryName` can't be empty, because it will cause name conflicts in CEP, have to do validation(check not empty String)
     }
 
 }

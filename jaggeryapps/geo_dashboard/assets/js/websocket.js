@@ -369,9 +369,11 @@ SpatialObject.prototype.update = function (geoJSON) {
     this.type = geoJSON.properties.type;
 
     if (geoJSON.properties.notify) {
-    	if (this.state != "NORMAL") {
+    	/* 
+        //This is implemented in alertWebSocket      
+        if (this.state != "NORMAL") {
             notifyAlert("Object ID: <span style='color: blue;cursor: pointer' onclick='focusOnSpatialObject(" + this.id + ")'>" + this.id + "</span> change state to: <span style='color: red'>" + geoJSON.properties.state + "</span> Info : " + this.information);
-        }
+        }*/
         var newLineStringGeoJson = this.createLineStringFeature(this.state, this.information, [this.latitude, this.longitude]);
         this.pathGeoJsons.push(newLineStringGeoJson);
 

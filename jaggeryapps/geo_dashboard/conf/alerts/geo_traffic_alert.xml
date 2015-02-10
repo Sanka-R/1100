@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<executionPlan name="within_traffic" statistics="disable"
+<executionPlan name="$executionPlanName" statistics="disable"
   trace="disable" xmlns="http://wso2.org/carbon/eventprocessor">
   <description/>
   <siddhiConfiguration>
