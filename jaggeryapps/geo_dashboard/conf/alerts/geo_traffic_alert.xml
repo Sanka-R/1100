@@ -10,7 +10,7 @@
     <stream as="dataIn" name="processedGeoEvents" version="1.0.0"/>
   </importedStreams>
   <queryExpressions><![CDATA[from dataIn[geo:intersects(geometry, "$geoFenceGeoJSON")==true]
-select id, state, concat("Traffic alert in $areaName. State: ", state, " ", information) as information, timeStamp, geo:needToNotify(id, concat(information, state)) as notify
+select id, state, concat("Traffic alert in $areaName. State: ", state, " ", information) as information, timeStamp, geo:needToNotify(id, concat(information, state), "sendFirst") as notify
 insert into innerStream;
 
 from innerStream[notify == true]
