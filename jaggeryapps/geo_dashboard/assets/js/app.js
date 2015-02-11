@@ -184,6 +184,7 @@ $('#searchbox').typeahead({
 // TODO: when click on a notification alert ? "Uncaught ReferenceError: KM is not defined "
 var toggled = false;
 function focusOnSpatialObject(objectId) {
+    console.log("Selecting"+objectId);
     var spatialObject = currentSpatialObjects[objectId];// (local)
     if (!spatialObject) {
         $.UIkit.notify({
@@ -196,6 +197,12 @@ function focusOnSpatialObject(objectId) {
     }
     clearFocus(); // Clear current focus if any
     selectedSpatialObject = objectId; // (global) Why not use 'var' other than implicit declaration http://stackoverflow.com/questions/1470488/what-is-the-function-of-the-var-keyword-and-when-to-use-it-or-omit-it#answer-1471738
+
+    console.log("Selected "+objectId+ " type " + spatialObject.type);
+    if(spatialObject.type == "area") {
+        spatialObject.focusOn(map);
+        return true;
+    }
 
     map.setView(spatialObject.marker.getLatLng(), 17, {animate: true}); // TODO: check the map._layersMaxZoom and set the zoom level accordingly
 
@@ -217,8 +224,7 @@ function focusOnSpatialObject(objectId) {
 function clearFocus() {
     if (selectedSpatialObject) {
         spatialObject = currentSpatialObjects[selectedSpatialObject];
-        spatialObject.removePath();
-        spatialObject.marker.closePopup();
+        spatialObject.removeFromMap();
         selectedSpatialObject = null;
     }
 }

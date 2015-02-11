@@ -89,27 +89,8 @@ var webSocketOnMessage = function processMessage(message) {
 var areaWebSocketOnMessage = function processMessage(message) {
     var json = $.parseJSON(message.data);
 	//console.log(JSON.stringify(json));
-	var myStyle = {
-    		"color": "#000001",
-    		"weight": 5,
-    		"opacity": 0,
-    		"fillOpacity": 0.75
-	};
-	
-	//console.log(json.properties.state);	
 
-	switch(json.properties.state){
-		case "Moderate": 
-			myStyle["color"] = "#ffb13b";
-			break;
-		case "Severe": 
-			myStyle["color"] = "#ff3f3f";
-	                break;
-        case "Minimal":
-            return;
-		
-	}
-	var receivedObject = L.geoJson(json, {style: myStyle});
+    var receivedObject = new GeoAreaObject(json);
 	currentSpatialObjects[json.id] = receivedObject;
 	currentSpatialObjects[json.id].addTo(map);
 }
@@ -214,8 +195,48 @@ var defaultIcon = L.icon({
     popupAnchor: [-2, -5]
 });
 
+function GeoAreaObject(json) {
+    this.id = json.id
+    this.type = "area";
+    
+	var myStyle = {
+    		"color": "#000001",
+    		"weight": 5,
+    		"opacity": 0,
+    		"fillOpacity": 0.75
+	};
+
+	switch(json.properties.state){
+		case "Moderate": 
+			myStyle["color"] = "#ffb13b";
+			break;
+		case "Severe": 
+			myStyle["color"] = "#ff3f3f";
+	        break;
+        case "Minimal":
+            return null;	
+	}
+	this.geoJson = L.geoJson(json, {style: myStyle});
+    return this;
+}
+
+GeoAreaObject.prototype.addTo = function (map) {
+    console.log("adding to map");
+    this.geoJson.addTo(map);
+};
+
+GeoAreaObject.prototype.focusOn = function (map) {
+    map.fitBounds(this.geoJson);
+};
+
+GeoAreaObject.prototype.removeFromMap = function () {
+    map.removeLayer(this.geoJson);
+};
+
+
 function SpatialObject(json) {
     this.id = json.id;
+    this.type = json.properties.type;
 
     // Have to store the coordinates , to use when user wants to draw path
     this.pathGeoJsons = []; // GeoJson standard MultiLineString(http://geojson.org/geojson-spec.html#id6) can't use here because this is a collection of paths(including property attributes)
@@ -429,10 +450,24 @@ SpatialObject.prototype.update = function (geoJSON) {
     this.popupTemplate.find('#objectId').html(this.id);
     this.popupTemplate.find('#information').html(this.information);
 
-    this.popupTemplate.find('#speed').html(this.speed);
-    this.popupTemplate.find('#heading').html(this.heading);
+    this.popupTemplate.find('#speed').html(Math.round(this.speed*10)/10);
+    this.popupTemplate.find('#heading').html(angleToHeading(this.heading));
     this.marker.setPopupContent(this.popupTemplate.html())
 };
+
+var headings = ["North", "NorthEast", "East", "SouthEast", "South", "SouthWest", "West", "NorthWest"];
+
+function angleToHeading(angle) {
+    var angle = (angle + 360 + 22.5 ) % 360;
+    angle = Math.floor(angle/45);
+    return headings[angle];
+}
+
+SpatialObject.prototype.removeFromMap = function () {
+    this.removePath();
+    this.marker.closePopup();
+};
+
 
 function notifyAlert(message) {
     $.UIkit.notify({
