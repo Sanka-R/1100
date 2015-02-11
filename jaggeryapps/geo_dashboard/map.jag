@@ -307,33 +307,37 @@ var user = session.get("user");
 
 			<!-- TFL Demo -->
 			<li class="uk-nav-sub">
-                <a href="#"><i class="fa fa-filter"></i> Traffic Alerts</a>
+                <a href="#"><i class="fa fa-filter"></i> Congestion Alerts</a>
                 <ul class="uk-nav-sub">
                     <li><a style="margin-left: 20%;" data-toggle="modal" href="controllers/modals/traffic_point.jag"
                            data-target="#commonModal"><i class="fa fa-square-o"></i> Area</a></li>
                 </ul>
             </li>
-
-            <!-- Settings section -->
-            <li class="uk-nav-header">Settings</li>
-            <!-- Add new tile server url -->
-            <li>
-                <a data-toggle="modal" data-target="#addTileServer"><i class="fa fa-plus"></i> Add tile server</a>
-            </li>
-            <!-- Add new WMS server url -->
-            <li>
-                <a data-toggle="modal" data-target="#addWmsUrl"><i class="fa fa-globe"></i> Add WMS end point</a>
-            </li>
-
-            <!-- Place holders need to remove or replace-->
-            <li class="uk-nav-header">
-                System Administrtion
-            </li>
-
-            <li>
-                <a onclick="setupWizard.show();return false;"><i style="color: #ff8905;" class="fa fa-cogs"></i> Setup
-                    Dashboard</a>
-            </li>
+			<!-- Advanced -->
+			<li class="uk-parent">
+				<a href="#"><i class="fa fa-filter"></i> Advanced Settings</a>
+				<ul class="uk-nav-sub">
+					<br>
+					<li style="color: white"> <strong>Settings</strong></li>
+				    <!-- Add new tile server url -->
+				    <li>
+				        <a data-toggle="modal" data-target="#addTileServer"><i class="fa fa-plus"></i> Add tile server</a>
+				    </li>
+				    <!-- Add new WMS server url -->
+				    <li>
+				        <a data-toggle="modal" data-target="#addWmsUrl"><i class="fa fa-globe"></i> Add WMS end point</a>
+				    </li>
+				    <br>
+				    <li style="color: white">
+				     <strong>System Administrtion</strong>
+				    </li>
+				    <li>
+				        <a onclick="setupWizard.show();return false;"><i style="color: #ff8905;" class="fa fa-cogs"></i> Setup
+				            Dashboard</a>
+				    </li>
+				</ul>
+                </ul>
+			</li>
         </ul>
 
     </div>

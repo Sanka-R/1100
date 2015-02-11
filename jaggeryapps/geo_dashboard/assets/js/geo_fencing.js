@@ -17,8 +17,23 @@
  */
 
 var drawControl;
+var removeAllControl;
+var drawnItems;
 function openTools(id) {
+
+	if(drawControl){
+    	map.removeControl(drawControl);
+    }
+    if(removeAllControl){
+    	map.removeControl(removeAllControl);
+    }
+    if(drawnItems){
+    	map.removeLayer(drawnItems);
+    }
+    
+    
     closeAll();
+    console.log("ads");
     $.UIkit.notify({
         message: "Please draw the required area on the map",
         status: 'success',
@@ -56,12 +71,12 @@ function openTools(id) {
                 return controlDiv;
             }
         });
-    var removeAllControl = new L.Control.RemoveAll();
+    removeAllControl = new L.Control.RemoveAll();
     map.addControl(removeAllControl);
 
 
     // Initialise the FeatureGroup to store editable layers
-    var drawnItems = new L.FeatureGroup();
+    drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
     if(id=="WithIn"){
@@ -174,7 +189,6 @@ function openTools(id) {
         
         console.log("created layer for "+ id);
         createPopup(layer,id);
-
     });
 
 }

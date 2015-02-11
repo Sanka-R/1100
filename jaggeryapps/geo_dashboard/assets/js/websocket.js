@@ -105,6 +105,8 @@ var areaWebSocketOnMessage = function processMessage(message) {
 		case "Severe": 
 			myStyle["color"] = "#ff3f3f";
 	                break;
+        case "Minimal":
+            return;
 		
 	}
 	var receivedObject = L.geoJson(json, {style: myStyle});
@@ -367,6 +369,10 @@ SpatialObject.prototype.update = function (geoJSON) {
     
     this.information = geoJSON.properties.information;
     this.type = geoJSON.properties.type;
+
+	if(this.type == "STOP"){
+		this.information = "Bus Stop";
+	}
 
     if (geoJSON.properties.notify) {
     	/* 

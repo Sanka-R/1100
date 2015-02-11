@@ -179,6 +179,7 @@ function setSpeedAlert() {
         closeAll();
     }, 'json');
 }
+var lastToolLeafletId = null;
 
 function setWithinAlert(leafletId) {
     /*
