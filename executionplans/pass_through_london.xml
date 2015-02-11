@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<executionPlan name="pass_through_all" statistics="disable"
+<executionPlan name="pass_through_london" statistics="disable"
   trace="disable" xmlns="http://wso2.org/carbon/eventprocessor">
   <description/>
   <siddhiConfiguration>
@@ -9,7 +9,7 @@
   <importedStreams>
     <stream as="dataIn" name="rawGeoStream" version="1.0.0"/>
   </importedStreams>
-  <queryExpressions><![CDATA[from dataIn
+  <queryExpressions><![CDATA[from dataIn[geo:intersects(geometry, "{'type': 'Polygon','coordinates': [[[-0.36117553710937494,51.31602217169266],[-0.36117553710937494,51.6205745112889],[0.245819091796875,51.6205745112889],[0.245819091796875,51.31602217169266],[-0.36117553710937494,51.31602217169266]]]}") == true]
 insert into dataOut]]></queryExpressions>
   <exportedStreams>
     <stream name="processedGeoEvents" valueOf="dataOut" version="1.0.0"/>

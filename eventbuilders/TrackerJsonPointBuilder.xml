@@ -23,7 +23,7 @@
         </property>
         <property>
             <from jsonPath="$.type"/>
-            <to default="vehicle" name="type" type="string"/>
+            <to default="VEHICLE" name="type" type="string"/>
         </property>
         <property>
             <from jsonPath="$.speed"/>
