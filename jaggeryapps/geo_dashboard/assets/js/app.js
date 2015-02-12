@@ -79,6 +79,33 @@ function initializeMap() {
     map.on('click', function (e) {
         $.UIkit.offcanvas.hide();//[force = false] no animation
     });
+    
+    map.on('zoomend', function(){
+    	if(map.getZoom() < 14){
+    		// remove busStops
+    		var layer;
+    		for (var key in currentSpatialObjects) {
+			  if (currentSpatialObjects.hasOwnProperty(key)) {
+			  	object = currentSpatialObjects[key];
+			  	if(object.type =="STOP")
+				map.removeLayer(object.geoJson);
+		    	console.log("removed busStops from map");
+			  }
+			}
+    	}else{
+    	
+    		var layer;
+    		for (var key in currentSpatialObjects) {
+			  if (currentSpatialObjects.hasOwnProperty(key)) {
+			  	object = currentSpatialObjects[key];
+			  	if(object.type == "STOP")
+				map.addLayer(object.geoJson);
+		    	console.log("added busStops to map");
+			  }
+			}
+    	}
+    	
+    });
 }
 
 /* Attribution control */

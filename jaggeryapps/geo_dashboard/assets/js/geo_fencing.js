@@ -22,13 +22,28 @@ var drawnItems;
 function openTools(id) {
 
 	if(drawControl){
+		try{
     	map.removeControl(drawControl);
+    	}catch(e){
+    		console.log("error: " + e.message);
+    	}
+		console.log("removed drawControl");
     }
     if(removeAllControl){
+    	try{
     	map.removeControl(removeAllControl);
+    	}catch(e){
+    		console.log("error: " + e.message);
+    	}
+		console.log("removed removeAllControl");
     }
     if(drawnItems){
+    	try{
     	map.removeLayer(drawnItems);
+    	}catch(e){
+    		console.log("error: " + e.message);
+    	}
+		console.log("removed drawnItems");
     }
     
     

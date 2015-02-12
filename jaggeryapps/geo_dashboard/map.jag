@@ -232,15 +232,18 @@ var user = session.get("user");
             </i>
         </h4>
     </div>
-    <div class="panel panel-default" style="max-height: 47%;overflow: auto;box-shadow: 0 0 8px 0 #635749">
+    <br>
+    <div class="panel panel-default" style="overflow: auto;box-shadow: 0 0 8px 0 #635749">
         <div class="panel-heading text-center"><h4>Speed variation</h4>
         </div>
+        <br>
         <div class="panel-body">
             <!-- TODO:  setting `margin-left` to increase the area of the chart is a bad hack there should be a better way to do this check :P -->
-            <div style="margin: 0;border: none;margin-left: -25px" id="chart_div"></div>
+            <div style="max-height: 100%;margin: 0;border: none;margin-left: -25px" id="chart_div"></div>
         </div>
     </div>
 
+	<!-- Disabling Alterts for demo 
     <div class="panel panel-default" style="max-height: 47%;overflow: auto;box-shadow: 0px 0px 8px 0px #635749">
         <div class="panel-heading text-center">
             <div class="panel-title"><h4>Alerts</h4></div>
@@ -252,6 +255,7 @@ var user = session.get("user");
 
         </div>
     </div>
+    -->
     <!--/panel-->
 </div>
 
@@ -775,6 +779,17 @@ var user = session.get("user");
             <h6>Speed<span class="label label-primary pull-right"><span id="speed"></span> km/h</span></h6>
             <h6>Heading<span id="heading" class="label label-primary pull-right"></span></h6>
             <button type="button" class="btn btn-info btn-xs">History</button>
+        </div>
+    </div>
+    
+    <div id="markerPopupStop" class="popover top">
+        <div class="arrow"></div>
+        <h3 class="popover-title">ID <span id="objectId"></span></h3>
+
+        <div class="popover-content">
+            <h6>Information</h6>
+
+            <p id="information" class="bg-primary" style="margin: 0px;padding: 0px;"></p>
         </div>
     </div>
 

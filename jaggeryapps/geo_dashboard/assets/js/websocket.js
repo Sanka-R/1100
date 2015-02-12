@@ -221,7 +221,6 @@ function GeoAreaObject(json) {
 }
 
 GeoAreaObject.prototype.addTo = function (map) {
-    console.log("adding to map");
     this.geoJson.addTo(map);
 };
 
@@ -256,8 +255,11 @@ function SpatialObject(json) {
 
     this.marker = this.geoJson.getLayers()[0];
     this.marker.options.title = this.id;
-
-    this.popupTemplate = $('#markerPopup');
+	if(this.type == "STOP"){
+		this.popupTemplate = $('#markerPopupStop');
+	}else {
+		this.popupTemplate = $('#markerPopup');
+	}
     this.marker.bindPopup(this.popupTemplate.html());
     return this;
 }
@@ -291,7 +293,7 @@ SpatialObject.prototype.setSpeed = function (speed) {
 SpatialObject.prototype.stateIcon = function () {
     // Performance of if-else, switch or map based conditioning http://stackoverflow.com/questions/8624939/performance-of-if-else-switch-or-map-based-conditioning
 	
-	if(this.type == ""){ 
+	if(this.type == "" || this.type == "VEHICLE"){ 
 		switch (this.state) {
 		    case "NORMAL":
 		        return normalIcon;
