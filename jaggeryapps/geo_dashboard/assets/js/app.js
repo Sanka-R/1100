@@ -67,8 +67,8 @@ function initializeMap() {
         map.remove();
     }
     map = L.map("map", {
-        zoom: 12,
-        center: [51.5, 0.2],
+        zoom: 14,
+        center: [51.548525, 0.111749],
         layers: [defaultOSM],
         zoomControl: false,
         attributionControl: false,
@@ -231,7 +231,7 @@ function focusOnSpatialObject(objectId) {
         return true;
     }
 
-    map.setView(spatialObject.marker.getLatLng(), 17, {animate: true}); // TODO: check the map._layersMaxZoom and set the zoom level accordingly
+    map.setView(spatialObject.marker.getLatLng(), 15, {animate: true}); // TODO: check the map._layersMaxZoom and set the zoom level accordingly
 
     $('#objectInfo').find('#objectInfoId').html(selectedSpatialObject);
     spatialObject.marker.openPopup();

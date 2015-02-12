@@ -292,6 +292,8 @@ var user = session.get("user");
                            data-target="#commonModal"><i class="fa fa-link"></i> Proximity alert</a></li>
                     <li><a style="margin-left: 20%;" data-toggle="modal" href="controllers/modals/stationery_alert.jag" data-target="#commonModal">
                             <i class="fa fa-chain-broken"></i> Stationary alert</a></li>
+                    <li><a style="margin-left: 20%;" data-toggle="modal" href="controllers/modals/traffic_point.jag" data-target="#commonModal">
+                            <i class="fa fa-square-o"></i> Congestion Alert</a></li>
                 </ul>
             </li>
 
@@ -309,14 +311,6 @@ var user = session.get("user");
                 </ul>
             </li>
 
-			<!-- TFL Demo -->
-			<li class="uk-nav-sub">
-                <a href="#"><i class="fa fa-filter"></i> Congestion Alerts</a>
-                <ul class="uk-nav-sub">
-                    <li><a style="margin-left: 20%;" data-toggle="modal" href="controllers/modals/traffic_point.jag"
-                           data-target="#commonModal"><i class="fa fa-square-o"></i> Area</a></li>
-                </ul>
-            </li>
 			<!-- Advanced -->
 			<li class="uk-parent">
 				<a href="#"><i class="fa fa-filter"></i> Advanced Settings</a>
