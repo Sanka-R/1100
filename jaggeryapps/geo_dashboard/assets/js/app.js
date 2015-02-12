@@ -89,9 +89,9 @@ function initializeMap() {
 			  	object = currentSpatialObjects[key];
 			  	if(object.type =="STOP")
 				map.removeLayer(object.geoJson);
-		    	console.log("removed busStops from map");
 			  }
 			}
+		    console.log("removed busStops from map");
     	}else{
     	
     		var layer;
@@ -100,9 +100,9 @@ function initializeMap() {
 			  	object = currentSpatialObjects[key];
 			  	if(object.type == "STOP")
 				map.addLayer(object.geoJson);
-		    	console.log("added busStops to map");
 			  }
 			}
+		    console.log("added busStops to map");
     	}
     	
     });
