@@ -216,7 +216,16 @@ function GeoAreaObject(json) {
         case "Minimal":
             return null;	
 	}
+	
 	this.geoJson = L.geoJson(json, {style: myStyle});
+	this.marker = this.geoJson.getLayers()[0];
+    this.marker.options.title = this.id;
+	this.popupTemplate = $('#areaPopup');
+	this.marker.bindPopup(this.popupTemplate.html());
+
+    this.popupTemplate.find('#objectId').html(this.id);
+    this.popupTemplate.find('#severity').html(json.properties.state);
+    this.popupTemplate.find('#information').html(json.properties.information);
     return this;
 }
 
@@ -232,6 +241,23 @@ GeoAreaObject.prototype.removeFromMap = function () {
     map.removeLayer(this.geoJson);
 };
 
+GeoAreaObject.prototype.update = function (geoJSON) {
+    
+    this.information = geoJSON.properties.information;
+    this.type = geoJSON.properties.type;
+
+    // Update the spatial object leaflet marker
+    this.marker.setLatLng([this.latitude, this.longitude]);
+    this.marker.setIconAngle(this.heading);
+    this.marker.setIcon(this.stateIcon());
+
+	console.log("update called");
+    // TODO: use general popup DOM
+    this.popupTemplate.find('#objectId').html(this.id);
+    this.popupTemplate.find('#information').html(this.information);
+
+    this.marker.setPopupContent(this.popupTemplate.html())
+}
 
 function SpatialObject(json) {
     this.id = json.id;
@@ -260,6 +286,7 @@ function SpatialObject(json) {
 	}else {
 		this.popupTemplate = $('#markerPopup');
 	}
+	
     this.marker.bindPopup(this.popupTemplate.html());
     return this;
 }

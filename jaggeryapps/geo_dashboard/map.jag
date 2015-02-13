@@ -786,6 +786,21 @@ var user = session.get("user");
             <p id="information" class="bg-primary" style="margin: 0px;padding: 0px;"></p>
         </div>
     </div>
+    
+    <div id="areaPopup" class="popover top">
+        <div class="arrow"></div>
+        <h3 class="popover-title">ID <span id="objectId"></span></h3>
+		<div class="popover-content">
+            <h6>Severity</h6>
+
+            <p id="severity" class="bg-primary" style="margin: 0px;padding: 0px;"></p>
+        </div>
+        <div class="popover-content">
+            <h6>Information</h6>
+
+            <p id="information" class="bg-primary" style="margin: 0px;padding: 0px;"></p>
+        </div>
+    </div>
 
     <div id="setWithinAlert">
         <form role="form" style="width: auto;">
