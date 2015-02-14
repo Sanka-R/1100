@@ -5,6 +5,7 @@
   <mapping customMapping="enable" type="json">
     <inline>
 {
+  "messageType" : "Prediction",
   "day": "{{day}}",
   "hour": "{{hour}}",
   "latitude": "{{latitude}}",
@@ -14,6 +15,6 @@
     </inline>
   </mapping>
   <to eventAdaptorName="DefaultWebsocketOutputAdaptor" eventAdaptorType="websocket-local">
-    <property name="websocket.topic">geoPredictionDataEndPoint</property>
+    <property name="websocket.topic">geoDataEndPoint</property>
   </to>
 </eventFormatter>

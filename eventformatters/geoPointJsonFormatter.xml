@@ -4,7 +4,8 @@
   <from streamName="fusedSpatialEvent" version="1.0.0"/>
   <mapping customMapping="enable" type="json">
     <inline>
-    {
+{
+  "messageType" : "Point",
   "type": "Feature",
   "id": "{{id}}",
   "properties": {
@@ -23,6 +24,6 @@
     </inline>
   </mapping>
   <to eventAdaptorName="DefaultWebsocketOutputAdaptor" eventAdaptorType="websocket-local">
-    <property name="websocket.topic">geoPointDataEndPoint</property>
+    <property name="websocket.topic">geoDataEndPoint</property>
   </to>
 </eventFormatter>

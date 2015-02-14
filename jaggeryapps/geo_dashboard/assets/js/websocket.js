@@ -21,8 +21,6 @@ var showPathFlag = false; // Flag to hold the status of draw objects path
 var currentSpatialObjects = {};
 var selectedSpatialObject; // This is set when user search for an object from the search box
 var webSocketURL;
-var areaWebSocketURL;
-var alertWebSocketURL;
 var websocket;
 
 // Make the function wait until the connection is made...
@@ -71,9 +69,21 @@ var webSocketOnError = function (e) {
 };
 
 var webSocketOnMessage = function processMessage(message) {
-    var geoJsonFeature = $.parseJSON(message.data);
+    var json = $.parseJSON(message.data);
+    if(json.messageType == "Point") {
+        processPointMessage(json);
+    } else if(json.messageType == "Traffic") {
+        processTrafficMessage(json);
+    } else if(json.messageType == "Alert") {
+        processAlertMessage(json);
+    } else if(json.messageType == "Prediction") {
+        processPredictionMessage(json);
+    } else {
+        console.log("Message type not supported.");
+    }
+};
 
-	//console.log(JSON.stringify(geoJsonFeature));
+function processPointMessage(geoJsonFeature) {
     if (geoJsonFeature.id in currentSpatialObjects) {
         var excitingObject = currentSpatialObjects[geoJsonFeature.id];
         excitingObject.update(geoJsonFeature);
@@ -84,25 +94,24 @@ var webSocketOnMessage = function processMessage(message) {
         currentSpatialObjects[receivedObject.id] = receivedObject;
         currentSpatialObjects[receivedObject.id].addTo(map);
     }
-};
+}
 
-var areaWebSocketOnMessage = function processMessage(message) {
-    var json = $.parseJSON(message.data);
-	//console.log(JSON.stringify(json));
-
+function processTrafficMessage(json) {
     var receivedObject = new GeoAreaObject(json);
 	currentSpatialObjects[json.id] = receivedObject;
 	currentSpatialObjects[json.id].addTo(map);
 }
 
-var alertWebSocketOnMessage = function processMessage(message) {
-    var json = $.parseJSON(message.data);
+function processAlertMessage(json) {
     console.log(json);
 	if (json.state != "NORMAL" && json.state != "MINIMAL") {
         notifyAlert("Object ID: <span style='color: blue;cursor: pointer' onclick='focusOnSpatialObject(" + json.id + ")'>" + json.id + "</span> change state to: <span style='color: red'>" + json.state + "</span> Info : " + json.information);
     }
 }
 
+function processPredictionMessage(json) {
+    console.log(json);
+}
 
 function initializeWebSocket(){
     websocket = new WebSocket(webSocketURL);
@@ -121,39 +130,7 @@ function initializeWebSocket(){
     websocket.onopen = webSocketOnOpen;
 }
 
-function initializeAreaWebSocket(){
-    areawebsocket = new WebSocket(areaWebSocketURL);
-    areawebsocket.onmessage = areaWebSocketOnMessage;
-
-    areawebsocket.onclose = function (e) {
-        $.UIkit.notify({
-            message: 'Connection lost with server!!',
-            status: 'danger',
-            timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
-            pos: 'top-center'
-        });
-        waitForSocketConnection(areawebsocket, initializeAreaWebSocket);
-    };
-}
-
-function initializeAlertWebSocket(){
-    alertwebsocket = new WebSocket(alertWebSocketURL);
-    alertwebsocket.onmessage = alertWebSocketOnMessage;
-
-    alertwebsocket.onclose = function (e) {
-        $.UIkit.notify({
-            message: 'Connection lost with server!!',
-            status: 'danger',
-            timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
-            pos: 'top-center'
-        });
-        waitForSocketConnection(alertwebsocket, initializeAlertWebSocket);
-    };
-}
-
 initializeWebSocket();
-initializeAreaWebSocket();
-initializeAlertWebSocket();
 
 var normalIcon = L.icon({
     iconUrl: ApplicationOptions.leaflet.iconUrls.normalIcon,

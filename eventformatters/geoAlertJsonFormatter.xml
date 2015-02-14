@@ -4,17 +4,18 @@
   <from streamName="AlertsNotifications" version="1.0.0"/>
   <mapping customMapping="enable" type="json">
     <inline>
-    {
+{
+    "messageType" : "Alert",
     "type": "Feature",
     "id": "{{id}}",
     "state": "{{state}}",
     "information": "{{information}}",
     "longitude" : {{longitude}},
     "latitude" : {{latitude}}
-    }
+}
     </inline>
   </mapping>
   <to eventAdaptorName="DefaultWebsocketOutputAdaptor" eventAdaptorType="websocket-local">
-    <property name="websocket.topic">geoAlertDataEndPoint</property>
+    <property name="websocket.topic">geoDataEndPoint</property>
   </to>
 </eventFormatter>

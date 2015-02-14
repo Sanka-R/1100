@@ -4,7 +4,8 @@
   <from streamName="processedGeoEvents" version="1.0.0"/>
   <mapping customMapping="enable" type="json">
     <inline>
-    {
+{
+  "messageType" : "Traffic",
   "type": "Feature",
   "id": "{{id}}",
   "properties": {
