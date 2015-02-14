@@ -22,6 +22,7 @@ var currentSpatialObjects = {};
 var selectedSpatialObject; // This is set when user search for an object from the search box
 var webSocketURL;
 var websocket;
+var currentPredictions = {};
 
 // Make the function wait until the connection is made...
 var waitTime = 1000;
@@ -30,7 +31,6 @@ function waitForSocketConnection(socket, initialize){
     setTimeout(
         function () {
             if (socket.readyState === 1) {
-                initialize();
                 waitTime = 1000;
                 console.log("Connection is made");
                 return;
@@ -43,7 +43,7 @@ function waitForSocketConnection(socket, initialize){
                     timeout: waitTime,
                     pos: 'top-center'
                 });
-                waitForSocketConnection(websocket, initialize);
+                initialize();
             }
 
         }, waitTime); // wait 5 milisecond for the connection...
@@ -109,7 +109,30 @@ function processAlertMessage(json) {
     }
 }
 
+function setPropertySafe(obj)
+{
+    function isObject(o)
+    {
+        if (o === null) return false;
+        var type = typeof o;
+        return type === 'object' || type === 'function';
+    }
+
+    if (!isObject(obj)) return;
+
+    var prop;
+    for (var i=1; i < arguments.length-1; i++)
+    {
+        prop = arguments[i];
+        if (!isObject(obj[prop])) obj[prop] = {};
+        if (i < arguments.length-2) obj = obj[prop];
+    }
+
+    obj[prop] = arguments[i];
+}
+
 function processPredictionMessage(json) {
+    setPropertySafe(currentPredictions,json.day,json.hour,json.longitude,json.latitude, json.traffic - 1);
     console.log(json);
 }
 
@@ -131,6 +154,42 @@ function initializeWebSocket(){
 }
 
 initializeWebSocket();
+
+var _longitudeStart = -0.0925
+var _latitudeStart = 51.4985
+var _unit = 0.005;
+
+function requestPredictions(longitude, latitude, d) {
+    var data = {
+        "longitude" : Math.round((longitude - _longitudeStart)/_unit),
+        "latitude" : Math.round((latitude - _latitudeStart)/_unit),
+        "day" : d.getUTCDate() - 3,
+        "hour" : d.getUTCHours()
+    };
+    var serverUrl = "http://localhost:9763/endpoints/GpsDataOverHttp/predictionInput";
+    for (var i = 0; i < 6; i++) {
+        data[hour] = data[hour] + 1;
+        $.post(serverUrl, data, function (response) {
+        });
+    }
+}
+
+function getPredictions(longitude, latitude, d) {
+    try {
+        var latitude = Math.round((longitude - _longitudeStart)/_unit);
+        var longitude = Math.round((latitude - _latitudeStart)/_unit);
+        var traffic = [0,0,0,0,0,0];
+        var hour = d.getUTCHours();
+        var day = d.getUTCDate() - 3;
+        for (var i = 0; i < 6; i++) {
+            hour = hour + 1;
+            traffic[i] = currentPredictions[day][hour][longitude][latitude];
+        }
+        return traffic;
+    } catch(e) {
+        return null;
+    }
+}
 
 var normalIcon = L.icon({
     iconUrl: ApplicationOptions.leaflet.iconUrls.normalIcon,

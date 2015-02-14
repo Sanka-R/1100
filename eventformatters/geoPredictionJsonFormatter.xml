@@ -10,7 +10,7 @@
   "hour": "{{hour}}",
   "latitude": "{{latitude}}",
   "longitude": "{{longitude}}",
-  "traffic": "{{traffic}}"
+  "traffic": {{traffic}}
 }
     </inline>
   </mapping>

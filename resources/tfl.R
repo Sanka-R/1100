@@ -6,4 +6,4 @@ if(!exists("model")) {
 
 dat<-array(c(hour,longitude,latitude,day), dim=c(1,4))
 colnames(dat) <- c("hour","longitude","latitude","day")
-traffic<-predict(model, dat)
+traffic<-predict(model, dat)[[1]]
