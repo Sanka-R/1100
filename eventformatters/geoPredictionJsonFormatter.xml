@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eventFormatter name="geoPredictionJsonFormatter" statistics="enable"
+  trace="enable" xmlns="http://wso2.org/carbon/eventformatter">
+  <from streamName="predictionOutput" version="1.0.0"/>
+  <mapping customMapping="enable" type="json">
+    <inline>
+{
+  "day": "{{day}}",
+  "hour": "{{hour}}",
+  "latitude": "{{latitude}}",
+  "longitude": "{{longitude}}",
+  "traffic": "{{traffic}}"
+}
+    </inline>
+  </mapping>
+  <to eventAdaptorName="DefaultWebsocketOutputAdaptor" eventAdaptorType="websocket-local">
+    <property name="websocket.topic">geoPredictionDataEndPoint</property>
+  </to>
+</eventFormatter>
