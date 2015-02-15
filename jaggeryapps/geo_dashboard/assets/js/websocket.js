@@ -160,36 +160,53 @@ var _latitudeStart = 51.4985
 var _unit = 0.005;
 
 function requestPredictions(longitude, latitude, d) {
-    var data = {
-        "longitude" : Math.round((longitude - _longitudeStart)/_unit),
-        "latitude" : Math.round((latitude - _latitudeStart)/_unit),
-        "day" : d.getUTCDate() - 3,
-        "hour" : d.getUTCHours()
-    };
+
     var serverUrl = "http://localhost:9763/endpoints/GpsDataOverHttp/predictionInput";
-    for (var i = 0; i < 6; i++) {
-        data[hour] = data[hour] + 1;
-        $.post(serverUrl, data, function (response) {
-        });
+    function loop(i) {
+        setTimeout(function() {
+            var data = {
+                day : d.getUTCDate() - 3,
+                hour : d.getUTCHours() + i + 1,
+                latitude : Math.round((latitude - _latitudeStart)/_unit),
+                longitude : Math.round((longitude - _longitudeStart)/_unit)
+            };
+            var json = JSON.stringify(data);
+                $.ajax({
+                    url: serverUrl,
+                    type: "POST",
+                    data: json,
+                    contentType: "application/json; charset=UTF-8"
+                });
+            if(i<6) {
+                loop(i+1);
+            }
+        },250);
     }
+    loop(0);
 }
+var d= new Date();
+requestPredictions(-0.09,51.5,d);
 
 function getPredictions(longitude, latitude, d) {
-    try {
-        var latitude = Math.round((longitude - _longitudeStart)/_unit);
-        var longitude = Math.round((latitude - _latitudeStart)/_unit);
-        var traffic = [0,0,0,0,0,0];
-        var hour = d.getUTCHours();
-        var day = d.getUTCDate() - 3;
-        for (var i = 0; i < 6; i++) {
-            hour = hour + 1;
+    var longitude = Math.round((longitude - _longitudeStart)/_unit);
+    var latitude = Math.round((latitude - _latitudeStart)/_unit);
+    var traffic = [0,0,0,0,0,0];
+    var hour = d.getUTCHours();
+    var day = d.getUTCDate() - 3;
+    for (var i = 0; i < 6; i++) {
+        hour = hour + 1;
+        try{
             traffic[i] = currentPredictions[day][hour][longitude][latitude];
+        } catch(e) {
+            console.log(i);
         }
-        return traffic;
-    } catch(e) {
-        return null;
     }
+    return traffic;
 }
+
+setTimeout(function() {
+console.log(getPredictions(-0.09,51.5,d))}
+, 5000);
 
 var normalIcon = L.icon({
     iconUrl: ApplicationOptions.leaflet.iconUrls.normalIcon,
