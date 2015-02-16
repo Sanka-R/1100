@@ -185,7 +185,7 @@ function requestPredictions(longitude, latitude, d) {
     loop(0);
 }
 var d= new Date();
-requestPredictions(-0.09,51.5,d);
+//requestPredictions(-0.09,51.5,d);
 
 function getPredictions(longitude, latitude, d) {
     var longitude = Math.round((longitude - _longitudeStart)/_unit);
@@ -209,10 +209,10 @@ function getPredictions(longitude, latitude, d) {
     return traffic;
 }
 
-setTimeout(function() {
+/*setTimeout(function() {
 console.log(getPredictions(-0.09,51.5,d))}
 , 5000);
-
+*/
 var normalIcon = L.icon({
     iconUrl: ApplicationOptions.leaflet.iconUrls.normalIcon,
     shadowUrl: false,

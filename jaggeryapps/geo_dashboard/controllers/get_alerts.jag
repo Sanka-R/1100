@@ -82,6 +82,29 @@ var log = new Log();
                 }
             }
             return allFences;
+        } else if( name == 'traffic'){
+			try{
+                var res = dataStore.get("geo/alerts/traffic/");
+            }
+            catch(e){
+                log.info(e.message);
+                return false;
+            }
+            var allFences = [];
+            for each (var resource in res.getChildren()) {
+                var fence = {};
+                try{
+                    fence['geoJson'] = JSON.parse(dataStore.get(resource).content.replace(/'/g, '"'));
+                    fence['queryName'] = dataStore.get(resource).getProperty('queryName');
+                    fence['areaName'] = dataStore.get(resource).getProperty('areaName');
+                    fence['createdTime'] = dataStore.get(resource).createdTime.toString();
+                    allFences.push(fence);
+                }
+                catch(e){
+                    log.info("Error: "+e+'\n');
+                }
+            }
+            return allFences;
         }
 
     }
