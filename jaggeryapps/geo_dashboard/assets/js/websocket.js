@@ -111,9 +111,16 @@ function processPointMessage(geoJsonFeature) {
 }
 
 function processTrafficMessage(json) {
-    var receivedObject = new GeoAreaObject(json);
-	currentSpatialObjects[json.id] = receivedObject;
-	currentSpatialObjects[json.id].addTo(map);
+	if(json.id in currentSpatialObjects){
+    	var existingObject = currentSpatialObjects[json.id];
+    	existingObject.update(json);
+    	console.log("existing area");
+	}
+	else {
+		var receivedObject = new GeoAreaObject(json);
+		currentSpatialObjects[json.id] = receivedObject;
+		currentSpatialObjects[json.id].addTo(map);
+	}
 }
 
 function processAlertMessage(json) {
