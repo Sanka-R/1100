@@ -248,6 +248,43 @@ function setStationeryAlert(leafletId) {
     }, 'json');
 }
 
+function getPrediction(leafletId) {
+    /*
+     * TODO: replace double quote to single quote because of a conflict when deploying execution plan in CEP
+     * this is against JSON standards so has been re-replaced when getting the data from governance registry
+     * (look in get_alerts for .replace() method)
+     * */
+    console.log("leafletId: " + leafletId);
+    var selectedAreaGeoJson = map._layers[leafletId].toGeoJSON().geometry;
+    var d = new Date();
+    console.log(d);
+
+    var selectedProcessedAreaGeoJson = JSON.stringify(selectedAreaGeoJson).replace(/"/g, "'");
+
+	requestPredictions(selectedAreaGeoJson.coordinates[0], selectedAreaGeoJson.coordinates[1], d);
+	
+		$('#predictionResults').animate({width: 'toggle'}, 100);
+	
+	$.UIkit.notify({
+            message: "Generating Predictions",
+            status: 'warning',
+            timeout: 5000,
+            pos: 'top-center'
+    });
+	
+	setTimeout(function() {
+		var arr = getPredictions(selectedAreaGeoJson.coordinates[0], selectedAreaGeoJson.coordinates[1], d);
+		chart = createPredictionChart();
+		console.log(arr[1]);
+		chart.load({columns: arr});
+		}
+	, 5000);
+	
+	
+       
+}
+
+
 function setTrafficAlert(leafletId) {
     /*
      * TODO: replace double quote to single quote because of a conflict when deploying execution plan in CEP

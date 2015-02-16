@@ -193,6 +193,39 @@ function createChart() {
     });
 }
 
+function createPredictionChart() {
+    return c3.generate({
+        bindto: '#prediction_chart_div',
+        data: {
+        	x : 'x',
+            columns: [
+                ['traffic']
+            ]
+        },
+        subchart: {
+            show: true
+        },
+        axis: {
+            y: {
+                label: {
+                    text: 'Traffic',
+                    position: 'outer-middle'
+                }
+            },
+            x: {
+                label: {
+                    text: 'UTC hour for today',
+                    position: 'outer-middle'
+                }
+            }
+            
+        },
+        legend: {
+            show: false
+        }
+    });
+}
+
 $('#searchbox').typeahead({
         hint: true,
         highlight: true,

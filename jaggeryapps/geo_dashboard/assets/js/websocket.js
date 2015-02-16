@@ -103,7 +103,7 @@ function processTrafficMessage(json) {
 }
 
 function processAlertMessage(json) {
-    console.log(json);
+    //console.log(json);
 	if (json.state != "NORMAL" && json.state != "MINIMAL") {
         notifyAlert("Object ID: <span style='color: blue;cursor: pointer' onclick='focusOnSpatialObject(" + json.id + ")'>" + json.id + "</span> change state to: <span style='color: red'>" + json.state + "</span> Info : " + json.information);
     }
@@ -133,7 +133,7 @@ function setPropertySafe(obj)
 
 function processPredictionMessage(json) {
     setPropertySafe(currentPredictions,json.day,json.hour,json.longitude,json.latitude, json.traffic - 1);
-    console.log(json);
+    //console.log(json);
 }
 
 function initializeWebSocket(){
@@ -190,13 +190,18 @@ requestPredictions(-0.09,51.5,d);
 function getPredictions(longitude, latitude, d) {
     var longitude = Math.round((longitude - _longitudeStart)/_unit);
     var latitude = Math.round((latitude - _latitudeStart)/_unit);
-    var traffic = [0,0,0,0,0,0];
+    var traffic = [['x',0,0,0,0,0,0],['data',0,0,0,0,0,0]];
     var hour = d.getUTCHours();
     var day = d.getUTCDate() - 3;
     for (var i = 0; i < 6; i++) {
         hour = hour + 1;
+        if (hour > 23) {
+        	hour = hour - 24;
+        	day = day + 1;
+        }
         try{
-            traffic[i] = currentPredictions[day][hour][longitude][latitude];
+        	traffic[0][i+1] = hour;
+            traffic[1][i+1] = currentPredictions[day][hour][longitude][latitude];
         } catch(e) {
             console.log(i);
         }

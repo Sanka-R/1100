@@ -252,6 +252,44 @@ var user = session.get("user");
     <!--/panel-->
 </div>
 
+
+<div id="predictionResults" style="background: darkgray;display: none;border-radius: 13px;height: 94%;padding: 0"
+     class="col-md-2 pull-right">
+    <div class="panel-heading text-center">
+        <h4> Prediction Results For: <span id="predictionResultsID" class="text-info"></span>
+            <i id="objectInfoCloseButton" class="fa fa-times pull-right"
+               onclick="$('#predictionResults').animate({width: ['toggle','swing']},200);toggled = false;spatialObject = currentSpatialObjects[selectedSpatialObject];spatialObject.removePath();spatialObject.marker.closePopup();selectedSpatialObject = null;">
+            </i>
+        </h4>
+    </div>
+    <br>
+    <div class="panel panel-default" style="overflow: auto;box-shadow: 0 0 8px 0 #635749">
+        <div class="panel-heading text-center"><h4>Prediction</h4>
+        </div>
+        <br>
+        <div class="panel-body">
+            <!-- TODO:  setting `margin-left` to increase the area of the chart is a bad hack there should be a better way to do this check :P -->
+            <div style="max-height: 100%;margin: 0;border: none;margin-left: -25px" id="prediction_chart_div"></div>
+        </div>
+    </div>
+
+	<!-- Disabling Alterts for demo 
+    <div class="panel panel-default" style="max-height: 47%;overflow: auto;box-shadow: 0px 0px 8px 0px #635749">
+        <div class="panel-heading text-center">
+            <div class="panel-title"><h4>Alerts</h4></div>
+        </div>
+        <div class="panel-body" style="padding: 0px">
+            <div id="showAlertsArea" class="list-group" style="margin-top: 15px">
+
+            </div>
+
+        </div>
+    </div>
+    -->
+    <!--/panel-->
+</div>
+
+
 <div id="left_side_pannel" class="uk-offcanvas" style="z-index: -1;">
     <div class="uk-offcanvas-bar" style="box-shadow: 3px 14px 13px -2px #211404;">
         <ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav>
@@ -303,10 +341,15 @@ var user = session.get("user");
                         Cross</a></li>
                 </ul>
             </li>
+            
+            <!-- Get Prediction -->
+            <li class="uk-sub">
+                <a data-toggle="modal" onclick="openTools('Prediction')"><i class="fa fa-paper-plane"></i> Traffic Prediction</a>
+            </li>
 
 			<!-- Advanced -->
 			<li class="uk-parent">
-				<a href="#"><i class="fa fa-filter"></i> Advanced Settings</a>
+				<a href="#"><i class="fa fa-plus"></i> Advanced Settings</a>
 				<ul class="uk-nav-sub">
 					<br>
 					<li style="color: white"> <strong>Settings</strong></li>
@@ -904,6 +947,8 @@ var user = session.get("user");
               </div>
           </form>
       </div>
+      
+      
 </div>
 
 <!-- markup for setup dashboard wizard content -->

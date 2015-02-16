@@ -48,7 +48,6 @@ function openTools(id) {
     
     
     closeAll();
-    console.log("ads");
     $.UIkit.notify({
         message: "Please draw the required area on the map",
         status: 'success',
@@ -93,7 +92,7 @@ function openTools(id) {
     // Initialise the FeatureGroup to store editable layers
     drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
-
+	
     if(id=="WithIn"){
         // Initialise the draw control and pass it the FeatureGroup of editable layers
         drawControl = new L.Control.Draw({
@@ -188,6 +187,24 @@ function openTools(id) {
                 featureGroup: drawnItems
             }
         });
+    } else if(id =="Prediction"){
+    	 drawControl = new L.Control.Draw({
+            draw: {
+                polygon: false,
+                rectangle: false,
+                polyline: false,
+                circle: false,
+                marker: {
+                	shapeOptions: {
+                		color: '#ff0043'
+                	}
+                }
+            },
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+        console.log("prediction tool opened");
     }
 
     map.addControl(drawControl);
@@ -218,9 +235,11 @@ function createPopup(layer,id) {
     } else if(id=="Traffic"){
         var popupTemplate = $('#setTrafficAlert');
         popupTemplate.find('#addTrafficAlert').attr('leaflet_id', layer._leaflet_id);
-        
-    console.log(">>got here " + id + " " +  popupTemplate.find('#addTrafficAlert') + " " + layer._leaflet_id);
-    } 
+        //console.log(">>got here " + id + " " +  popupTemplate.find('#addTrafficAlert') + " " + layer._leaflet_id);
+    } else if(id=="Prediction"){
+    	getPrediction(layer._leaflet_id);
+    	return;
+    }
     
     popupTemplate.find('#exportGeoJson').attr('leaflet_id', layer._leaflet_id);
     popupTemplate.find('#editGeoJson').attr('leaflet_id', layer._leaflet_id);
