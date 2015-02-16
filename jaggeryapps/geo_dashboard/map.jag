@@ -344,7 +344,8 @@ var user = session.get("user");
             
             <!-- Get Prediction -->
             <li class="uk-sub">
-                <a data-toggle="modal" onclick="openTools('Prediction')"><i class="fa fa-paper-plane"></i> Traffic Prediction</a>
+                <a onclick="
+    $('.removeGeoFence').tooltip(); openTools('Prediction')"><i class="fa fa-paper-plane"></i> Traffic Prediction</a>
             </li>
 
 			<!-- Advanced -->

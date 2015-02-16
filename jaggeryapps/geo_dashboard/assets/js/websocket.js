@@ -193,7 +193,7 @@ function requestPredictions(longitude, latitude, d) {
             if(i<6) {
                 loop(i+1);
             }
-        },250);
+        },500);
     }
     loop(0);
 }

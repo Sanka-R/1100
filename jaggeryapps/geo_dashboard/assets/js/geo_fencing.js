@@ -19,8 +19,25 @@
 var drawControl;
 var removeAllControl;
 var drawnItems;
-function openTools(id) {
+var lastId;
 
+$(function() {
+    map.on('draw:created', function (e) {
+        var type = e.layerType, layer = e.layer;
+
+    /*        if (type === 'marker') {
+            // Do marker specific actions
+        }*/
+
+        drawnItems.addLayer(layer);
+        
+        console.log("created layer for "+ lastId);
+        createPopup(layer,lastId);
+    });
+});
+
+function openTools(id) {
+    lastId = id;
 	if(drawControl){
 		try{
     	map.removeControl(drawControl);
@@ -40,6 +57,7 @@ function openTools(id) {
     if(drawnItems){
     	try{
     	map.removeLayer(drawnItems);
+        console.log("removing layer");
     	}catch(e){
     		console.log("error: " + e.message);
     	}
@@ -69,6 +87,10 @@ function openTools(id) {
                         controlDiv.remove();
                         drawControl.removeFrom(map);
                         drawnItems.clearLayers();
+                        if(id == "Prediction"){
+                            $('#predictionResults').animate({width: ['toggle','swing']},200);
+                       	    toggeled = false;
+                        }
                     });
 
                 var controlUI = L.DomUtil.create('a', 'fa fa-times fa-lg drawControlCloseButton', controlDiv);
@@ -209,19 +231,7 @@ function openTools(id) {
 
     map.addControl(drawControl);
 	
-    map.on('draw:created', function (e) {
-        var type = e.layerType,
-            layer = e.layer;
-
-/*        if (type === 'marker') {
-            // Do marker specific actions
-        }*/
-
-        drawnItems.addLayer(layer);
-        
-        console.log("created layer for "+ id);
-        createPopup(layer,id);
-    });
+   
 
 }
 
