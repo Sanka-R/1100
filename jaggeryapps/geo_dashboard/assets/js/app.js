@@ -193,8 +193,9 @@ function createChart() {
     });
 }
 
+var predictionChart;
 function createPredictionChart() {
-    return c3.generate({
+    predictionChart = c3.generate({
         bindto: '#prediction_chart_div',
         data: {
         	x : 'x',

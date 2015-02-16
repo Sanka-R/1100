@@ -258,7 +258,7 @@ var user = session.get("user");
     <div class="panel-heading text-center">
         <h4> Prediction Results For: <span id="predictionResultsID" class="text-info"></span>
             <i id="objectInfoCloseButton" class="fa fa-times pull-right"
-               onclick="$('#predictionResults').animate({width: ['toggle','swing']},200);toggled = false;spatialObject = currentSpatialObjects[selectedSpatialObject];spatialObject.removePath();spatialObject.marker.closePopup();selectedSpatialObject = null;">
+               onclick="$('#predictionResults').animate({width: ['toggle','swing']},200);toggeled = false;spatialObject = currentSpatialObjects[selectedSpatialObject];spatialObject.removePath();spatialObject.marker.closePopup();selectedSpatialObject = null;">
             </i>
         </h4>
     </div>

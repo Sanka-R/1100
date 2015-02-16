@@ -248,6 +248,7 @@ function setStationeryAlert(leafletId) {
     }, 'json');
 }
 
+var toggeled = false;
 function getPrediction(leafletId) {
     /*
      * TODO: replace double quote to single quote because of a conflict when deploying execution plan in CEP
@@ -262,8 +263,10 @@ function getPrediction(leafletId) {
     var selectedProcessedAreaGeoJson = JSON.stringify(selectedAreaGeoJson).replace(/"/g, "'");
 
 	requestPredictions(selectedAreaGeoJson.coordinates[0], selectedAreaGeoJson.coordinates[1], d);
-	
+	if(!toggeled){
 		$('#predictionResults').animate({width: 'toggle'}, 100);
+		toggeled = true;
+	}
 	
 	$.UIkit.notify({
             message: "Generating Predictions",
@@ -274,9 +277,9 @@ function getPrediction(leafletId) {
 	
 	setTimeout(function() {
 		var arr = getPredictions(selectedAreaGeoJson.coordinates[0], selectedAreaGeoJson.coordinates[1], d);
-		chart = createPredictionChart();
+		createPredictionChart();
 		console.log(arr[1]);
-		chart.load({columns: arr});
+		predictionChart.load({columns: arr});
 		}
 	, 5000);
 	
