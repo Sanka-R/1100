@@ -50,22 +50,36 @@ function waitForSocketConnection(socket, initialize){
 }
 
 var webSocketOnOpen = function () {
+    websocket.set_opened();
     $.UIkit.notify({
         message: 'You Are Connectedto Map Server!!',
         status: 'success',
         timeout: ApplicationOptions.constance.NOTIFY_SUCCESS_TIMEOUT,
         pos: 'top-center'
     });
+
+};
+
+var webSocketOnClose = function (e) {
+    if(websocket.get_opened()) {
+        $.UIkit.notify({
+            message: 'Connection lost with server!!',
+            status: 'danger',
+            timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
+            pos: 'top-center'
+        });
+    }
+    waitForSocketConnection(websocket, initializeWebSocket);
 };
 
 var webSocketOnError = function (e) {
+    if(!websocket.get_opened()) return;
     $.UIkit.notify({
         message: 'Something went wrong when trying to connect to <b>'+webSocketURL+'<b/>',
         status: 'danger',
         timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
         pos: 'top-center'
     });
-//    waitForSocketConnection(websocket, webSocketURL, null);
 };
 
 var webSocketOnMessage = function processMessage(message) {
@@ -136,19 +150,18 @@ function processPredictionMessage(json) {
     //console.log(json);
 }
 
+WebSocket.prototype.set_opened = function () {
+    this._opened = true;
+}
+
+WebSocket.prototype.get_opened = function () {
+   return this._opened || false;
+}
+
 function initializeWebSocket(){
     websocket = new WebSocket(webSocketURL);
     websocket.onmessage = webSocketOnMessage;
-    websocket.onclose = function (e) {
-        $.UIkit.notify({
-            message: 'Connection lost with server!!',
-            status: 'danger',
-            timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
-            pos: 'top-center'
-        });
-        waitForSocketConnection(websocket, initializeWebSocket);
-    };
-
+    websocket.onclose = webSocketOnClose;
     websocket.onerror = webSocketOnError;
     websocket.onopen = webSocketOnOpen;
 }
@@ -279,11 +292,10 @@ function GeoAreaObject(json) {
 	this.marker = this.geoJson.getLayers()[0];
     this.marker.options.title = this.id;
 	this.popupTemplate = $('#areaPopup');
-	this.marker.bindPopup(this.popupTemplate.html());
-
     this.popupTemplate.find('#objectId').html(this.id);
     this.popupTemplate.find('#severity').html(json.properties.state);
     this.popupTemplate.find('#information').html(json.properties.information);
+	this.marker.bindPopup(this.popupTemplate.html());
     return this;
 }
 
