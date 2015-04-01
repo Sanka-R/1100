@@ -86,11 +86,22 @@ var user = session.get("user");
     <!-- ** comment out below imports if using minimized wso2_geo.min library **  -->
     <script src="assets/js/application_options.js"></script>
     <script>
-        var _url = 'ws://'+ApplicationOptions.constance.WEB_SOCKET_SERVER+':'+ApplicationOptions.constance.WEB_SOCKET_PORT+'/outputwebsocket/t/' + '<%= user.domain %>' + '/'+ApplicationOptions.constance.CEP_WEB_SOCKET_OUTPUT_ADAPTOR_NAME+'/'
+        var _url = 'ws://'+ApplicationOptions.constants.WEB_SOCKET_SERVER+':'+ApplicationOptions.constants.WEB_SOCKET_PORT+'/outputwebsocket/';
 
-        var webSocketURL = _url +ApplicationOptions.constance.CEP_WEB_SOCKET_BUILDER_TOPIC; // TODO: Get the server IP and port and other static information from the applicationOptions object
-        console.log(webSocketURL);
-        ApplicationOptions.constance.WEB_SOCKET_URL = webSocketURL;
+        var trafficWebSocketURL = _url + ApplicationOptions.constants.CEP_WEB_SOCKET_BUILDER_TRAFFIC;
+        var alertWebSocketURL = _url + ApplicationOptions.constants.CEP_WEB_SOCKET_BUILDER_ALERT;
+        var pointWebSocketURL = _url + ApplicationOptions.constants.CEP_WEB_SOCKET_BUILDER_POINT;
+        var predictionWebSocketURL = _url + ApplicationOptions.constants.CEP_WEB_SOCKET_BUILDER_PREDICTION;
+        
+        console.log(trafficWebSocketURL);
+        console.log(alertWebSocketURL);
+        console.log(pointWebSocketURL);
+        console.log(predictionWebSocketURL);
+        
+        ApplicationOptions.constants.WEB_SOCKET_URL = trafficWebSocketURL;
+        ApplicationOptions.constants.ALERT_WEB_SOCKET_URL = alertWebSocketURL;
+        ApplicationOptions.constants.POINT_WEB_SOCKET_URL = pointWebSocketURL;
+        ApplicationOptions.constants.PREDICTION_WEB_SOCKET_URL = predictionWebSocketURL;
     </script>
     <script src="assets/js/websocket.js"></script>
     <script src="assets/js/geo_remote.js"></script>

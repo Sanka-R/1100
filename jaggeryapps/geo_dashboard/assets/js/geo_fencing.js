@@ -69,7 +69,7 @@ function openTools(id) {
     $.UIkit.notify({
         message: "Please draw the required area on the map",
         status: 'success',
-        timeout: ApplicationOptions.constance.NOTIFY_SUCCESS_TIMEOUT,
+        timeout: ApplicationOptions.constants.NOTIFY_SUCCESS_TIMEOUT,
         pos: 'top-center'
     });
 

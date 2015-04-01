@@ -48,7 +48,7 @@ function success(position) {
     $.UIkit.notify({
         message: "Map view set to browser's location",
         status: 'info',
-        timeout: ApplicationOptions.constance.NOTIFY_INFO_TIMEOUT,
+        timeout: ApplicationOptions.constants.NOTIFY_INFO_TIMEOUT,
         pos: 'top-center'
     });
 };
@@ -57,7 +57,7 @@ function error() {
     $.UIkit.notify({
         message: "Unable to find browser location!",
         status: 'warning',
-        timeout: ApplicationOptions.constance.NOTIFY_WARNING_TIMEOUT,
+        timeout: ApplicationOptions.constants.NOTIFY_WARNING_TIMEOUT,
         pos: 'top-center'
     });
 };
@@ -251,7 +251,7 @@ function focusOnSpatialObject(objectId) {
         $.UIkit.notify({
             message: "Spatial Object <span style='color:red'>" + objectId + "</span> not in the Map!!",
             status: 'warning',
-            timeout: ApplicationOptions.constance.NOTIFY_WARNING_TIMEOUT,
+            timeout: ApplicationOptions.constants.NOTIFY_WARNING_TIMEOUT,
             pos: 'top-center'
         });
         return false;

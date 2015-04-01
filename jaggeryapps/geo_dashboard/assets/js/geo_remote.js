@@ -59,7 +59,7 @@ function addTileUrl() {
         $.UIkit.notify({
             message: '<span style="color: dodgerblue">' + response + '</span>',
             status: 'success',
-            timeout: ApplicationOptions.constance.NOTIFY_SUCCESS_TIMEOUT,
+            timeout: ApplicationOptions.constants.NOTIFY_SUCCESS_TIMEOUT,
             pos: 'top-center'
         });
         closeAll();
@@ -91,7 +91,7 @@ function getTileServers() {
                 message: 'Loading... <span style="color: #ccfcff">' + val.name + '</span>' +
                     ' URL: <span style="color: #00ff00">' + val.url + '</span>',
                 status: 'info',
-                timeout: ApplicationOptions.constance.NOTIFY_INFO_TIMEOUT,
+                timeout: ApplicationOptions.constants.NOTIFY_INFO_TIMEOUT,
                 pos: 'bottom-left'
             });
             //baseLayers[val.name]
@@ -137,7 +137,7 @@ function addWmsEndPoint() {
         $.UIkit.notify({
             message: '<span style="color: dodgerblue">' + response + '</span>',
             status: 'success',
-            timeout: ApplicationOptions.constance.NOTIFY_SUCCESS_TIMEOUT,
+            timeout: ApplicationOptions.constants.NOTIFY_SUCCESS_TIMEOUT,
             pos: 'top-center'
         });
         closeAll();

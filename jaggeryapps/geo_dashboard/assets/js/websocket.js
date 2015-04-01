@@ -21,83 +21,94 @@ var showPathFlag = false; // Flag to hold the status of draw objects path
 var currentSpatialObjects = {};
 var selectedSpatialObject; // This is set when user search for an object from the search box
 var webSocketURL;
-var websocket;
+var alertWebSocketURL;
+var pointWebSocketURL;
+var trafficWebSocketURL;
+var predictionWebSocketURL;
+var traffic_websocket;
+var alert_websocket;
+var point_websocket;
+var prediction_websocket;
 var currentPredictions = {};
-
+var connectedAll = false;
+var t = 0;
 // Make the function wait until the connection is made...
 var waitTime = 1000;
-function waitForSocketConnection(socket, initialize){
 
+function waitForSocketConnection(){
     setTimeout(
         function () {
-            if (socket.readyState === 1) {
+            console.log("waiting" + waitTime);
+            if (traffic_websocket.readyState === 1 && alert_websocket.readyState === 1 &&
+                    point_websocket.readyState === 1 && prediction_websocket.readyState === 1) {
                 waitTime = 1000;
                 console.log("Connection is made");
                 return;
 
             } else {
-                waitTime += 400;
+                waitTime += 1500;
                 $.UIkit.notify({
                     message: "wait for connection "+waitTime/1000+" Seconds...",
                     status: 'warning',
                     timeout: waitTime,
                     pos: 'top-center'
                 });
-                initialize();
+                initializeWebSocket();
+                waitForSocketConnection();
             }
 
-        }, waitTime); // wait 5 milisecond for the connection...
+        }, waitTime); // wait 5 milliseconds for the connection...
 }
 
 var webSocketOnOpen = function () {
-    websocket.set_opened();
-    $.UIkit.notify({
-        message: 'You Are Connectedto Map Server!!',
-        status: 'success',
-        timeout: ApplicationOptions.constance.NOTIFY_SUCCESS_TIMEOUT,
-        pos: 'top-center'
-    });
+    if (traffic_websocket.readyState === 1 && alert_websocket.readyState === 1 &&
+        point_websocket.readyState === 1 && prediction_websocket.readyState === 1) {
 
+        $.UIkit.notify({
+            message: 'You Are Connected to the Map Server!!',
+            status: 'success',
+            timeout: ApplicationOptions.constants.NOTIFY_SUCCESS_TIMEOUT,
+            pos: 'top-center'
+        });
+        connectedAll = true;
+    }
 };
 
 var webSocketOnClose = function (e) {
-    if(websocket.get_opened()) {
-        $.UIkit.notify({
-            message: 'Connection lost with server!!',
-            status: 'danger',
-            timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
-            pos: 'top-center'
-        });
+    if(new Date().getTime() - t > ApplicationOptions.constants.NOTIFY_DANGER_TIMEOUT) {
+        if (connectedAll) {
+            $.UIkit.notify({
+                message: 'Connection lost with server!!',
+                status: 'danger',
+                timeout: ApplicationOptions.constants.NOTIFY_DANGER_TIMEOUT,
+                pos: 'top-center'
+            });
+            //this.unset_opened();
+            connectedAll = false;
+            waitForSocketConnection();
+        }
+        t = new Date().getTime();
     }
-    waitForSocketConnection(websocket, initializeWebSocket);
 };
 
 var webSocketOnError = function (e) {
-    if(!websocket.get_opened()) return;
-    $.UIkit.notify({
+    if(connectedAll) {
+        $.UIkit.notify({
         message: 'Something went wrong when trying to connect to <b>'+webSocketURL+'<b/>',
         status: 'danger',
-        timeout: ApplicationOptions.constance.NOTIFY_DANGER_TIMEOUT,
+        timeout: ApplicationOptions.constants.NOTIFY_DANGER_TIMEOUT,
         pos: 'top-center'
-    });
-};
-
-var webSocketOnMessage = function processMessage(message) {
-    var json = $.parseJSON(message.data);
-    if(json.messageType == "Point") {
-        processPointMessage(json);
-    } else if(json.messageType == "Traffic") {
-        processTrafficMessage(json);
-    } else if(json.messageType == "Alert") {
-        processAlertMessage(json);
-    } else if(json.messageType == "Prediction") {
-        processPredictionMessage(json);
-    } else {
-        console.log("Message type not supported.");
+        });
     }
 };
 
-function processPointMessage(geoJsonFeature) {
+var processPointMessage = function PPM(message) {
+    var geoJsonFeature = $.parseJSON(message.data);
+    if(geoJsonFeature.messageType != "Point"){
+        console.log("Message type not supported in Point WebSocket.");
+        return;
+    }
+
     if (geoJsonFeature.id in currentSpatialObjects) {
         var excitingObject = currentSpatialObjects[geoJsonFeature.id];
         excitingObject.update(geoJsonFeature);
@@ -110,8 +121,14 @@ function processPointMessage(geoJsonFeature) {
     }
 }
 
-function processTrafficMessage(json) {
-	if(json.id in currentSpatialObjects){
+var processTrafficMessage = function PTF(message) {
+    var json = $.parseJSON(message.data);
+    if(json.messageType != "Traffic"){
+        console.log("Message type not supported in Traffic WebSocket.");
+        return;
+    }
+
+    if(json.id in currentSpatialObjects){
     	var existingObject = currentSpatialObjects[json.id];
     	existingObject.update(json);
     	console.log("existing area");
@@ -123,9 +140,13 @@ function processTrafficMessage(json) {
 	}
 }
 
-function processAlertMessage(json) {
-    //console.log(json);
-	if (json.state != "NORMAL" && json.state != "MINIMAL") {
+var processAlertMessage = function PAM(message) {
+    var json = $.parseJSON(message.data);
+    if(json.messageType != "Alert"){
+        console.log("Message type not supported in Alert WebSocket.");
+        return;
+    }
+    if (json.state != "NORMAL" && json.state != "MINIMAL") {
         notifyAlert("Object ID: <span style='color: blue;cursor: pointer' onclick='focusOnSpatialObject(" + json.id + ")'>" + json.id + "</span> change state to: <span style='color: red'>" + json.state + "</span> Info : " + json.information);
     }
 }
@@ -152,31 +173,47 @@ function setPropertySafe(obj)
     obj[prop] = arguments[i];
 }
 
-function processPredictionMessage(json) {
+var processPredictionMessage = function PPRM(message) {
+    var json = $.parseJSON(message.data);
+    if(json.messageType != "Prediction"){
+        console.log("Message type not supported in Prediction WebSocket.");
+        return;
+    }
     setPropertySafe(currentPredictions,json.day,json.hour,json.longitude,json.latitude, json.traffic - 1);
     //console.log(json);
 }
 
-WebSocket.prototype.set_opened = function () {
-    this._opened = true;
-}
-
-WebSocket.prototype.get_opened = function () {
-   return this._opened || false;
-}
-
 function initializeWebSocket(){
-    websocket = new WebSocket(webSocketURL);
-    websocket.onmessage = webSocketOnMessage;
-    websocket.onclose = webSocketOnClose;
-    websocket.onerror = webSocketOnError;
-    websocket.onopen = webSocketOnOpen;
+
+    traffic_websocket = new WebSocket(trafficWebSocketURL);
+    traffic_websocket.onmessage = processTrafficMessage;
+    traffic_websocket.onclose = webSocketOnClose;
+    traffic_websocket.onerror = webSocketOnError;
+    traffic_websocket.onopen = webSocketOnOpen;
+
+    alert_websocket = new WebSocket(alertWebSocketURL);
+    alert_websocket.onmessage = processAlertMessage;
+    alert_websocket.onclose = webSocketOnClose;
+    alert_websocket.onerror = webSocketOnError;
+    alert_websocket.onopen = webSocketOnOpen;
+
+    point_websocket = new WebSocket(pointWebSocketURL);
+    point_websocket.onmessage = processPointMessage;
+    point_websocket.onclose = webSocketOnClose;
+    point_websocket.onerror = webSocketOnError;
+    point_websocket.onopen = webSocketOnOpen;
+
+    prediction_websocket = new WebSocket(predictionWebSocketURL);
+    prediction_websocket.onmessage = processPredictionMessage;
+    prediction_websocket.onclose = webSocketOnClose;
+    prediction_websocket.onerror = webSocketOnError;
+    prediction_websocket.onopen = webSocketOnOpen;
 }
 
 initializeWebSocket();
 
-var _longitudeStart = -0.0925
-var _latitudeStart = 51.4985
+var _longitudeStart = -0.0925;
+var _latitudeStart = 51.4985;
 var _unit = 0.005;
 
 function requestPredictions(longitude, latitude, d) {
@@ -229,10 +266,6 @@ function getPredictions(longitude, latitude, d) {
     return traffic;
 }
 
-/*setTimeout(function() {
-console.log(getPredictions(-0.09,51.5,d))}
-, 5000);
-*/
 var normalIcon = L.icon({
     iconUrl: ApplicationOptions.leaflet.iconUrls.normalIcon,
     shadowUrl: false,
@@ -274,7 +307,7 @@ var defaultIcon = L.icon({
 });
 
 function GeoAreaObject(json) {
-    this.id = json.id
+    this.id = json.id;
     this.type = "area";
     
 	var myStyle = {
@@ -294,7 +327,7 @@ function GeoAreaObject(json) {
         case "Minimal":
             return null;	
 	}
-	
+
 	this.geoJson = L.geoJson(json, {style: myStyle});
 	this.marker = this.geoJson.getLayers()[0];
     this.marker.options.title = this.id;
@@ -321,14 +354,14 @@ GeoAreaObject.prototype.removeFromMap = function () {
 GeoAreaObject.prototype.update = function (geoJSON) {
     
     this.information = geoJSON.properties.information;
-    this.type = geoJSON.properties.type;
+    this.type = geoJSON.messageType;
+    console.log(geoJSON.messageType);
 
     // Update the spatial object leaflet marker
     this.marker.setLatLng([this.latitude, this.longitude]);
     this.marker.setIconAngle(this.heading);
     this.marker.setIcon(this.stateIcon());
 
-	console.log("update called");
     // TODO: use general popup DOM
     this.popupTemplate.find('#objectId').html(this.id);
     this.popupTemplate.find('#information').html(this.information);
@@ -388,8 +421,8 @@ SpatialObject.prototype.addTo = function (map) {
 SpatialObject.prototype.setSpeed = function (speed) {
     this.speed = speed;
     this.speedHistory.push(speed);
-//    console.log("DEBUG: this.speedHistory.length = "+this.speedHistory.length+" ApplicationOptions.constance.SPEED_HISTORY_COUNT = "+ApplicationOptions.constance.SPEED_HISTORY_COUNT);
-    if (this.speedHistory.length > ApplicationOptions.constance.SPEED_HISTORY_COUNT) {
+//    console.log("DEBUG: this.speedHistory.length = "+this.speedHistory.length+" ApplicationOptions.constants.SPEED_HISTORY_COUNT = "+ApplicationOptions.constants.SPEED_HISTORY_COUNT);
+    if (this.speedHistory.length > ApplicationOptions.constants.SPEED_HISTORY_COUNT) {
         this.speedHistory.splice(1, 1);
     }
 };
@@ -466,7 +499,6 @@ SpatialObject.prototype.removePath = function () {
 };
 
 SpatialObject.prototype.getSectionStyles = function (state) {
-    // TODO:<done> use option object to assign hardcode values
     var pathColor;
     switch (state) {
         case "NORMAL":
@@ -502,11 +534,6 @@ SpatialObject.prototype.update = function (geoJSON) {
 	}
 
     if (geoJSON.properties.notify) {
-    	/* 
-        //This is implemented in alertWebSocket      
-        if (this.state != "NORMAL") {
-            notifyAlert("Object ID: <span style='color: blue;cursor: pointer' onclick='focusOnSpatialObject(" + this.id + ")'>" + this.id + "</span> change state to: <span style='color: red'>" + geoJSON.properties.state + "</span> Info : " + this.information);
-        }*/
         var newLineStringGeoJson = this.createLineStringFeature(this.state, this.information, [this.latitude, this.longitude]);
         this.pathGeoJsons.push(newLineStringGeoJson);
 
@@ -579,7 +606,7 @@ function notifyAlert(message) {
     $.UIkit.notify({
         message: "Alert: " + message,
         status: 'warning',
-        timeout: ApplicationOptions.constance.NOTIFY_WARNING_TIMEOUT,
+        timeout: ApplicationOptions.constants.NOTIFY_WARNING_TIMEOUT,
         pos: 'bottom-left'
     });
 }
@@ -596,7 +623,7 @@ function Alert(type, message, level) {
         $.UIkit.notify({
             message: this.level + ': ' + this.type + ' ' + this.message,
             status: 'info',
-            timeout: ApplicationOptions.constance.NOTIFY_INFO_TIMEOUT,
+            timeout: ApplicationOptions.constants.NOTIFY_INFO_TIMEOUT,
             pos: 'bottom-left'
         });
     }

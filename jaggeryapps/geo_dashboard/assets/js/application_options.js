@@ -28,11 +28,14 @@ var ApplicationOptions = {
             header: 'grey'
         }
     },
-    constance:{
+    constants:{
         WEB_SOCKET_SERVER: 'localhost',
         WEB_SOCKET_PORT: 9763,
-        CEP_WEB_SOCKET_OUTPUT_ADAPTOR_NAME: 'DefaultWebsocketOutputAdaptor',
-        CEP_WEB_SOCKET_BUILDER_TOPIC: 'geoDataEndPoint',
+
+        CEP_WEB_SOCKET_BUILDER_POINT: 'pointDataEndPoint',
+        CEP_WEB_SOCKET_BUILDER_TRAFFIC: 'trafficDataEndPoint',        
+        CEP_WEB_SOCKET_BUILDER_ALERT: 'alertDataEndPoint',        
+        CEP_WEB_SOCKET_BUILDER_PREDICTION: 'predictionDataEndPoint',
 
         SPEED_HISTORY_COUNT: 20,
         NOTIFY_INFO_TIMEOUT: 1000,
